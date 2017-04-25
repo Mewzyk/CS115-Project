@@ -21,6 +21,13 @@ def index():
     return dict()
 
 
+@auth.requires_login()
+def createProfile():
+    form = SQLFORM(db.profile,
+    labels= {'RPS': "Favorite Choice", 'pic': "Profile Picture", 'body': "Bio"},
+                 submit_button = 'Complete profile')
+    return dict(form=form)
+
 def user():
     """
     exposes:
