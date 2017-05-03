@@ -47,11 +47,14 @@ paperLocation = paperArc.centroid;
 scissorLocation = scissorArc.centroid;
 console.log(rockArc.centroid());
 
+
+
 vis.append("circle")
 	.attr("cx", rockLocation[0])
 	.attr("cy", rockLocation[1])
 	.attr("r", "50")
 	.attr("fill", "green")
+	.attr("transform", "translate("rockLocation[0]", "rockLocation[1]")")
 	.on('mouseover', function(d){
 	d3.select(this).attr("r", "100");
 	})
