@@ -1,9 +1,29 @@
+var wins = 0;
+var losses = 0;
+
 var board = d3.select("body").append("svg")
     .attr("width", 800)
     .attr("height", 150)
+	.style("display", "block")
     .append("g")
 	.attr("transform", "translate(25, 25)");
 
+var items = [{color:"red", value:"0", transform:"translate(0,0)"},
+			 {color:"blue", value:"1", transform:"translate(150,0)"},
+			 {color:"black", value:"2", transform:"translate(300,0)"}];
+
+board.selectAll('.rect').data(items).enter().append('rect')
+	.attr('width', '100')
+	.attr('height', '100')
+	.attr('fill', function(d){return d.color})
+	.attr('transform', function(d){return d.transform})
+	.on("mouseover", mouseHover)
+	.on("mouseout", mouseOut)
+	.on("click", click);
+
+//OLD CODE THAT IS DONE BY THIS ^
+
+/*
 board.append('rect')
 	.attr('width', '100')
 	.attr('height', '100')
@@ -28,12 +48,14 @@ board.append('rect')
 	.on("mouseover", mouseHover)
 	.on("mouseout", mouseOut);
 
+*/
+
 var score = d3.select("body").append("svg")
     .attr("width", 400)
     .attr("height", 100)
 	.attr("transform", "translate(25,25)")
+	.style("display", "block")
     .append("g");
-	
 
 score.append('rect')
 	.attr('width', '400')
@@ -71,6 +93,39 @@ d3.selectAll('.loss')
 d3.selectAll('.status')
 	.text("Status: Have fun!")
 
+d3.select("body").append("svg")
+    .attr("width", 400)
+    .attr("height", 50);
+
+
+d3.select("body").append("p").text("Red beats Blue");
+
+d3.select("body").append("p").text("Blue beats Black");
+
+d3.select("body").append("p").text("Black beats Red");
+
+
+function click(){
+	choice = d3.select(this).datum().value;
+	compChoice = computerChoice();
+	chickenDinner = winner(choice, compChoice);
+	
+	console.log(chickenDinner);
+	if(chickenDinner < 0) d3.selectAll('.status').text("Status: Tie!");
+	if(chickenDinner == 0){
+		losses = losses + 1;
+		d3.selectAll('.status').text("Status: You loose!");
+		d3.selectAll('.losses').text("Losses: " + losses);
+		
+	}
+	if(chickenDinner == 1){
+		wins = wins + 1;
+		d3.selectAll('.status').text("Status: You win!");
+		d3.selectAll('.wins').text("Wins: " + wins);
+	}
+	
+}
+
 function mouseHover(){
 	d3.select(this)
 			.transition()
@@ -85,4 +140,21 @@ function mouseOut(){
 			.attr('width', '100')
 			.attr('height', '100')
 			.attr('stroke', 'none');
+}
+
+function computerChoice(){
+	return Math.floor(3 * Math.random());
+}
+
+/*
+Returns 1 for User win
+Returns 0 for Computer Win
+Returns -1 for Tie
+*/
+function winner(userInput, compInput){
+	if(userInput == 2 && compInput == 0) return 1;
+	if(userInput == 0 && compInput == 2) return 0;
+	if(userInput < compInput) return 1;
+	if(compInput < userInput) return 0;
+	if(compInput == userInput) return -1;	
 }
