@@ -1,5 +1,5 @@
 var wins = 0;
-var losses = 0;
+var lose = 0;
 
 var board = d3.select("body").append("svg")
     .attr("width", 800)
@@ -12,7 +12,8 @@ var items = [{color:"red", value:"0", transform:"translate(0,0)"},
 			 {color:"blue", value:"1", transform:"translate(150,0)"},
 			 {color:"black", value:"2", transform:"translate(300,0)"}];
 
-board.selectAll('.rect').data(items).enter().append('rect')
+board.selectAll('.rect').data(items).enter()
+	.append('rect')
 	.attr('width', '100')
 	.attr('height', '100')
 	.attr('fill', function(d){return d.color})
@@ -72,7 +73,7 @@ score.append("text")
 	.classed("wins", true);
 
 score.append("text")
-	.text("Losses: ")
+	.text("Loses: ")
 	.attr("font-size", "20")
 	.attr("transform", "translate(5,45)")
 	.classed("loss", true);
@@ -104,20 +105,28 @@ d3.select("body").append("p").text("Blue beats Black");
 
 d3.select("body").append("p").text("Black beats Red");
 
+console.log(d3.selectAll('.rect'));
+
 
 function click(){
 	choice = d3.select(this).datum().value;
 	compChoice = computerChoice();
+	
+	//implement display computer choice to html here.
+	
 	chickenDinner = winner(choice, compChoice);
 	
 	console.log(chickenDinner);
 	if(chickenDinner < 0) d3.selectAll('.status').text("Status: Tie!");
+	
 	if(chickenDinner == 0){
-		losses = losses + 1;
-		d3.selectAll('.status').text("Status: You loose!");
-		d3.selectAll('.losses').text("Losses: " + losses);
-		
+		console.log(lose);
+		lose = lose + 1;
+		d3.selectAll('.status').text("Status: You lose!");
+		d3.selectAll('.loss').text("Losses: " + lose);
+		console.log(lose);
 	}
+	
 	if(chickenDinner == 1){
 		wins = wins + 1;
 		d3.selectAll('.status').text("Status: You win!");
@@ -129,8 +138,8 @@ function click(){
 function mouseHover(){
 	d3.select(this)
 			.transition()
-			.attr('width', '105')
-			.attr('height', '105')
+			.attr('width', '110')
+			.attr('height', '110')
 			.attr('stroke', 'black');
 }
 
