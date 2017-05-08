@@ -1,6 +1,8 @@
+//variables to hold global wins and losses for a given page
 var wins = 0;
 var lose = 0;
 
+//svg wrapper that holds the squares
 var board = d3.select("body").append("svg")
     .attr("width", 800)
     .attr("height", 150)
@@ -8,10 +10,14 @@ var board = d3.select("body").append("svg")
     .append("g")
 	.attr("transform", "translate(25, 25)");
 
+//object that holds the values specific for each rectangle
+//Used to feed into the .selectAll in next line
 var items = [{color:"red", value:"0", transform:"translate(0,0)"},
 			 {color:"blue", value:"1", transform:"translate(150,0)"},
 			 {color:"black", value:"2", transform:"translate(300,0)"}];
 
+//Enters the data in 'items' each into their own rectangle
+//Each line beyond enter() is executed once for each data point (so three times)
 board.selectAll('.rect').data(items).enter()
 	.append('rect')
 	.attr('width', '100')
@@ -22,8 +28,8 @@ board.selectAll('.rect').data(items).enter()
 	.on("mouseout", mouseOut)
 	.on("click", click);
 
-//OLD CODE THAT IS DONE BY THIS ^
 
+//OLD CODE THAT IS DONE BY THIS ^
 /*
 board.append('rect')
 	.attr('width', '100')
@@ -48,9 +54,10 @@ board.append('rect')
 	.attr("transform", "translate(300,0)")
 	.on("mouseover", mouseHover)
 	.on("mouseout", mouseOut);
-
 */
 
+
+//Svg wrapper to hold the squre box. 
 var score = d3.select("body").append("svg")
     .attr("width", 400)
     .attr("height", 100)
@@ -58,6 +65,7 @@ var score = d3.select("body").append("svg")
 	.style("display", "block")
     .append("g");
 
+//rectangle border around the svg
 score.append('rect')
 	.attr('width', '400')
 	.attr('height', '100')
@@ -66,34 +74,42 @@ score.append('rect')
 	.attr('stroke-width', '2')
 	.attr("transform", "translate(0,0)");
 
+//Text that holds wins
 score.append("text")
 	.text("Wins: ")
 	.attr("font-size", "20")
 	.attr("transform", "translate(5,17)")
 	.classed("wins", true);
 
+//Text that holds losses
 score.append("text")
 	.text("Loses: ")
 	.attr("font-size", "20")
 	.attr("transform", "translate(5,45)")
 	.classed("loss", true);
 
+//Text that holds the status text
 score.append("text")
 	.text("Status: ")
 	.attr("font-size", "20")
 	.attr("transform", "translate(5,73)")
 	.classed("status", true);
 
-
+/**
+USE THE NEXT THREE LINES AS EXAMPLES FOR HOW TO DYNAMICALLY EDIT THE HTML
+*/
+//example code that sets the wins to 0 at init
 d3.selectAll('.wins')
 	.text("Wins: " + 0);
 
+//example code that sets loss to 0 at init.
 d3.selectAll('.loss')
 	.text("Losses: " + 0);
 
 d3.selectAll('.status')
 	.text("Status: Have fun!")
 
+//Extra little sg that holds the rules
 d3.select("body").append("svg")
     .attr("width", 400)
     .attr("height", 50);
@@ -108,7 +124,10 @@ d3.select("body").append("p").text("Black beats Red");
 console.log(d3.selectAll('.rect'));
 
 
+
+//on click function that is used for each square
 function click(){
+	
 	choice = d3.select(this).datum().value;
 	compChoice = computerChoice();
 	
@@ -135,6 +154,10 @@ function click(){
 	
 }
 
+
+/**
+Following two functions are assigned to each square and basically just increase/decrease the size of the squares on hover.
+*/
 function mouseHover(){
 	d3.select(this)
 			.transition()
@@ -151,6 +174,7 @@ function mouseOut(){
 			.attr('stroke', 'none');
 }
 
+//RNG function
 function computerChoice(){
 	return Math.floor(3 * Math.random());
 }
