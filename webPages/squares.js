@@ -12,21 +12,45 @@ var board = d3.select("body").append("svg")
 
 //object that holds the values specific for each rectangle
 //Used to feed into the .selectAll in next line
-var items = [{color:"red", value:"0", transform:"translate(0,0)"},
-			 {color:"blue", value:"1", transform:"translate(150,0)"},
-			 {color:"black", value:"2", transform:"translate(300,0)"}];
+var choices = [{color:"red", value:"0", transform:"translate(0,0)", stroke:'black'},
+			 {color:"blue", value:"1", transform:"translate(150,0)", stroke:'black'},
+			 {color:"black", value:"2", transform:"translate(300,0)", stroke:'black'}];
+
+var selection = [{color:'none', value:'-1', transform:"translate(500, 0)", stroke:'black', class:'userChoice'},
+				 {color:'none', value:'-1', transform:'translate(650,0)', stroke:'black', class:'compChoice'}];
 
 //Enters the data in 'items' each into their own rectangle
 //Each line beyond enter() is executed once for each data point (so three times)
-board.selectAll('.rect').data(items).enter()
+board.selectAll('.rect').data(choices).enter()
 	.append('rect')
 	.attr('width', '100')
 	.attr('height', '100')
+	.attr('stroke', function(d){return d.stroke})
 	.attr('fill', function(d){return d.color})
 	.attr('transform', function(d){return d.transform})
 	.on("mouseover", mouseHover)
 	.on("mouseout", mouseOut)
 	.on("click", click);
+
+board.append('rect')
+	.attr('width', '100')
+	.attr('height', '100')
+	.attr('fill', 'none')
+	.attr('stroke', 'black')
+	.attr("transform", "translate(500,0)")
+	.classed('userChoice', true)
+	.on("mouseover", mouseHover)
+	.on("mouseout", mouseOut);
+
+board.append('rect')
+	.attr('width', '100')
+	.attr('height', '100')
+	.attr('fill', 'none')
+	.attr('stroke', 'black')
+	.attr("transform", "translate(650,0)")
+	.classed('compChoice', true)
+	.on("mouseover", mouseHover)
+	.on("mouseout", mouseOut);
 
 
 //OLD CODE THAT IS DONE BY THIS ^
@@ -131,6 +155,9 @@ function click(){
 	choice = d3.select(this).datum().value;
 	compChoice = computerChoice();
 	
+	d3.selectAll('.userChoice').attr('fill', getColor(choice));
+	d3.selectAll('.compChoice').attr('fill', getColor(compChoice));
+	
 	//implement display computer choice to html here.
 	
 	chickenDinner = winner(choice, compChoice);
@@ -190,4 +217,10 @@ function winner(userInput, compInput){
 	if(userInput < compInput) return 1;
 	if(compInput < userInput) return 0;
 	if(compInput == userInput) return -1;	
+}
+
+function getColor(value){
+	if(value == 0) return 'red';
+	if(value == 1) return 'blue';
+	if(value == 2) return 'black';
 }
