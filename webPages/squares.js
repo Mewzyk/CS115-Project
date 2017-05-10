@@ -19,6 +19,7 @@ var choices = [{color:"red", value:"0", transform:"translate(0,0)", stroke:'blac
 var selection = [{color:'none', value:'-1', transform:"translate(500, 0)", stroke:'black', class:'userChoice'},
 				 {color:'none', value:'-1', transform:'translate(650,0)', stroke:'black', class:'compChoice'}];
 
+
 //Enters the data in 'items' each into their own rectangle
 //Each line beyond enter() is executed once for each data point (so three times)
 board.selectAll('.rect').data(choices).enter()
@@ -32,27 +33,18 @@ board.selectAll('.rect').data(choices).enter()
 	.on("mouseout", mouseOut)
 	.on("click", click);
 
-board.append('rect')
+board.selectAll('.rect').data(selection).enter()
+	.append('rect')
 	.attr('width', '100')
 	.attr('height', '100')
-	.attr('fill', 'none')
 	.attr('stroke', 'black')
-	.attr("transform", "translate(500,0)")
-	.classed('choice', true)
+	.attr('fill', 'none')
+	.attr('transform', function(d){return d.transform})
+    .attr('class', function(d){return d.class})
 	.on("mouseover", mouseHover)
 	.on("mouseout", mouseOut);
 
-board.append('rect')
-	.attr('width', '100')
-	.attr('height', '100')
-	.attr('fill', 'none')
-	.attr('stroke', 'black')
-	.attr("transform", "translate(650,0)")
-	.classed('compChoice', true)
-	.on("mouseover", mouseHover)
-	.on("mouseout", mouseOut);
-
-//OLD CODE THAT IS DONE BY THIS ^
+//OLD CODE THAT IS DONE ABOVE^
 /*
 board.append('rect')
 	.attr('width', '100')
@@ -73,6 +65,28 @@ board.append('rect')
 	.attr('height', '100')
 	.attr('fill', 'black')
 	.attr("transform", "translate(300,0)")
+	.on("mouseover", mouseHover)
+	.on("mouseout", mouseOut);
+*/
+
+//OLD CODE THAT IS DONE ABOVE
+/* 
+board.append('rect')
+	.attr('width', '100')
+	.attr('height', '100')
+	.attr('fill', 'none')
+	.attr('stroke', 'black')
+	.attr("transform", "translate(500,0)")
+	.classed('userChoice', true)
+	.on("mouseover", mouseHover)
+	.on("mouseout", mouseOut);
+board.append('rect')
+	.attr('width', '100')
+	.attr('height', '100')
+	.attr('fill', 'none')
+	.attr('stroke', 'black')
+	.attr("transform", "translate(650,0)")
+	.classed('compChoice', true)
 	.on("mouseover", mouseHover)
 	.on("mouseout", mouseOut);
 */
@@ -169,18 +183,18 @@ console.log(d3.selectAll('.rect'));
 //on click function that is used for each square
 function click(){
 	
-	choice = d3.select(this).datum().value;
+	userChoice = d3.select(this).datum().value;
 	compChoice = computerChoice();
 	
-	d3.selectAll('.choice').attr('fill', getColor(choice));
+	d3.selectAll('.userChoice').attr('fill', getColor(userChoice));
 	d3.selectAll('.compChoice').attr('fill', getColor(compChoice));
     
     // display user and computer choices
-    d3.selectAll('.you').text("You chose: " + getColor(choice) );
+    d3.selectAll('.you').text("You chose: " + getColor(userChoice));
     d3.selectAll('.computer').text("Computer chose: " + getColor(compChoice));
     
 	//implement display computer choice to html here.
-	chickenDinner = winner(choice, compChoice);
+	chickenDinner = winner(userChoice, compChoice);
 	
 	console.log(chickenDinner);
 	if(chickenDinner < 0) d3.selectAll('.status').text("Status: Tie!");
