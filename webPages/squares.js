@@ -13,8 +13,8 @@ var board = d3.select("body").append("svg")
 //object that holds the values specific for each rectangle
 //Used to feed into the .selectAll in next line
 var choices = [{color:"red", value:"0", transform:"translate(0,0)", stroke:'black'},
-			 {color:"blue", value:"1", transform:"translate(150,0)", stroke:'black'},
-			 {color:"black", value:"2", transform:"translate(300,0)", stroke:'black'}];
+			   {color:"blue", value:"1", transform:"translate(150,0)", stroke:'black'},
+			   {color:"black", value:"2", transform:"translate(300,0)", stroke:'black'}];
 
 var selection = [{color:'none', value:'-1', transform:"translate(500, 0)", stroke:'black', class:'userChoice'},
 				 {color:'none', value:'-1', transform:'translate(650,0)', stroke:'black', class:'compChoice'}];
@@ -38,7 +38,7 @@ board.append('rect')
 	.attr('fill', 'none')
 	.attr('stroke', 'black')
 	.attr("transform", "translate(500,0)")
-	.classed('userChoice', true)
+	.classed('choice', true)
 	.on("mouseover", mouseHover)
 	.on("mouseout", mouseOut);
 
@@ -52,7 +52,6 @@ board.append('rect')
 	.on("mouseover", mouseHover)
 	.on("mouseout", mouseOut);
 
-
 //OLD CODE THAT IS DONE BY THIS ^
 /*
 board.append('rect')
@@ -62,7 +61,6 @@ board.append('rect')
 	.attr("transform", "translate(0,0)")
 	.on("mouseover", mouseHover)
 	.on("mouseout", mouseOut);
-
 board.append('rect')
 	.attr('width', '100')
 	.attr('height', '100')
@@ -70,7 +68,6 @@ board.append('rect')
 	.attr("transform", "translate(150,0)")
 	.on("mouseover", mouseHover)
 	.on("mouseout", mouseOut);
-
 board.append('rect')
 	.attr('width', '100')
 	.attr('height', '100')
@@ -80,10 +77,9 @@ board.append('rect')
 	.on("mouseout", mouseOut);
 */
 
-
-//Svg wrapper to hold the squre box. 
+//Svg wrapper to hold the square box. 
 var score = d3.select("body").append("svg")
-    .attr("width", 400)
+    .attr("width", 800)
     .attr("height", 100)
 	.attr("transform", "translate(25,25)")
 	.style("display", "block")
@@ -91,8 +87,8 @@ var score = d3.select("body").append("svg")
 
 //rectangle border around the svg
 score.append('rect')
-	.attr('width', '400')
-	.attr('height', '100')
+	.attr('width', '800')
+	.attr('height', '80')
 	.attr('fill', 'none')
 	.attr('stroke', 'black')
 	.attr('stroke-width', '2')
@@ -119,6 +115,20 @@ score.append("text")
 	.attr("transform", "translate(5,73)")
 	.classed("status", true);
 
+//Text that holds the user choice text
+score.append("text")
+	.text("You chose: ")
+	.attr("font-size", "10")
+	.attr("transform", "translate(525,17)")
+	.classed("you", true);
+
+//Text that holds the computer choice text
+score.append("text")
+	.text("Computer chose: ")
+	.attr("font-size", "10")
+	.attr("transform", "translate(675,17)")
+	.classed("computer", true);
+
 /**
 USE THE NEXT THREE LINES AS EXAMPLES FOR HOW TO DYNAMICALLY EDIT THE HTML
 */
@@ -131,13 +141,21 @@ d3.selectAll('.loss')
 	.text("Losses: " + 0);
 
 d3.selectAll('.status')
-	.text("Status: Have fun!")
+	.text("Status: Have fun!");
+
+d3.selectAll('.you')
+    .text("You chose:");
+
+d3.selectAll('.computer')
+    .text("Computer chose:");
 
 //Extra little sg that holds the rules
 d3.select("body").append("svg")
     .attr("width", 400)
     .attr("height", 50);
 
+
+d3.select("body").append("p").text("Rules:");
 
 d3.select("body").append("p").text("Red beats Blue");
 
@@ -148,18 +166,20 @@ d3.select("body").append("p").text("Black beats Red");
 console.log(d3.selectAll('.rect'));
 
 
-
 //on click function that is used for each square
 function click(){
 	
 	choice = d3.select(this).datum().value;
 	compChoice = computerChoice();
 	
-	d3.selectAll('.userChoice').attr('fill', getColor(choice));
+	d3.selectAll('.choice').attr('fill', getColor(choice));
 	d3.selectAll('.compChoice').attr('fill', getColor(compChoice));
-	
+    
+    // display user and computer choices
+    d3.selectAll('.you').text("You chose: " + getColor(choice) );
+    d3.selectAll('.computer').text("Computer chose: " + getColor(compChoice));
+    
 	//implement display computer choice to html here.
-	
 	chickenDinner = winner(choice, compChoice);
 	
 	console.log(chickenDinner);
@@ -178,9 +198,7 @@ function click(){
 		d3.selectAll('.status').text("Status: You win!");
 		d3.selectAll('.wins').text("Wins: " + wins);
 	}
-	
 }
-
 
 /**
 Following two functions are assigned to each square and basically just increase/decrease the size of the squares on hover.
