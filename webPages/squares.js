@@ -12,13 +12,29 @@ var board = d3.select("body").append("svg")
 
 //object that holds the values specific for each rectangle
 //Used to feed into the .selectAll in next line
+//replace colored rect options with rock, paper, scissor images
 var choices = [{color:"red", value:"0", transform:"translate(0,0)", stroke:'black'},
 			   {color:"blue", value:"1", transform:"translate(150,0)", stroke:'black'},
 			   {color:"black", value:"2", transform:"translate(300,0)", stroke:'black'}];
 
 var selection = [{color:'none', value:'-1', transform:"translate(500, 0)", stroke:'black', class:'userChoice'},
-				 {color:'none', value:'-1', transform:'translate(650,0)', stroke:'black', class:'compChoice'}];
+				 {color:'none', value:'-1', transform:'translate(650,0)', stroke:'black', class:'compChoice'}]
 
+// svg wrapper that holds the images
+var svg = d3.select("body").append("svg")
+    .attr("width", 800)
+    .attr("height", 200);
+
+var g = svg.append("g");
+
+// rock image option
+Image("rock", 25, 53);
+
+// scissor image option
+Image("scissor", 175, 53);
+
+// paper image option
+Image("paper", 325, 53);
 
 //Enters the data in 'items' each into their own rectangle
 //Each line beyond enter() is executed once for each data point (so three times)
@@ -171,7 +187,7 @@ d3.select("body").append("svg")
 
 d3.select("body").append("p").text("Rules:");
 
-d3.select("body").append("p").text("Red beats Blue");
+d3.select("body").append("p").text("Red beats Blue - Rock beats ");
 
 d3.select("body").append("p").text("Blue beats Black");
 
@@ -212,6 +228,58 @@ function click(){
 		d3.selectAll('.status').text("Status: You win!");
 		d3.selectAll('.wins').text("Wins: " + wins);
 	}
+    
+    // Find a better way to display user/comp choices without appending the image; do something like the boxes
+    
+    
+    // reset user choice
+    Image('blank', 525, 0);
+    // reset comp choice
+    Image('blank', 675, 0);
+    
+    /*
+    // replace code below with a for loop like one below; figure out how to assess array elements
+    var choices = new Array ("red", "blue", "black");
+
+    for (i = 0; i < 3; i++) {
+        if (getColor(userChoice) == choices[i]) {
+            Image(choices[i], 525, 53);
+        }
+        if (getColor(compChoice) == choices[i]) {
+            Image(choices[i], 675, 53);
+        }  
+    }
+    */
+    
+    // if user chose red/rock
+    if(getColor(userChoice) == 'red') {
+        Image("rock", 525, 53);
+    }
+    
+    // if user chose blue/scissor
+    if(getColor(userChoice) == 'blue') {
+        Image("scissor", 525, 53);
+    }
+    
+    // if user chose black/paper
+    if(getColor(userChoice) == 'black') {
+        Image("paper", 525, 53);
+    }
+    
+    // if computer chose red/rock
+    if(getColor(compChoice) == 'red') {
+        Image("rock", 675, 53);
+    }
+    
+    // if computer chose blue/scissor
+    if(getColor(compChoice) == 'blue') {
+        Image("scissor", 675, 53);
+    }
+    
+    // if computer chose black/paper
+    if(getColor(compChoice) == 'black') {
+        Image("paper", 675, 53);
+    }
 }
 
 /**
@@ -230,13 +298,55 @@ function mouseOut(){
 			.transition()
 			.attr('width', '100')
 			.attr('height', '100')
-			.attr('stroke', 'none');
+			.attr('stroke', 'black');
 }
 
 //RNG function
 function computerChoice(){
 	return Math.floor(3 * Math.random());
 }
+
+// displays the options as well as user/computer choices
+// parameters: choice = rock, paper, scissor; x = x data; y = y data
+function Image(choice, x, y) {
+    // rock
+    if (choice == 'rock') {
+        var img = g.append("svg:image")
+            .attr("xlink:href", "https://img.clipartfest.com/201616f9cdd7deb314215b1be524d2a2_clipart-alpine-landscape-rock-rock-clipart_800-534.png")
+            .attr("width", 100)
+            .attr("height", 100)
+            .attr("x", x)
+            .attr("y",y);
+    }   
+    // scissor
+    if (choice == 'scissor') {
+        var img = g.append("svg:image") 
+            .attr("xlink:href", "http://www.clipartbest.com/cliparts/KTn/Xj6/KTnXj6Mgc.png")
+            .attr("width", 100)
+            .attr("height", 100)
+            .attr("x", x)
+            .attr("y", y);
+    }
+    // paper
+    if (choice == 'paper') {
+        var img = g.append("svg:image") 
+            .attr("xlink:href", "http://www.clipartbest.com/cliparts/biy/LEM/biyLEMk4T.png")
+            .attr("width", 100)
+            .attr("height", 100)
+            .attr("x", x)
+            .attr("y", y);
+    }     
+    // blank reset
+    if (choice == 'blank') {
+        var img = g.append("svg:image")
+            .attr("xlink:href", "https://s-media-cache-ak0.pinimg.com/236x/ef/fc/f6/effcf6728d028df02850fe65a458189e.jpg")
+            .attr("width", 100)
+            .attr("height", 200)
+            .attr("x", x)
+            .attr("y",y);
+    }
+}
+
 
 /*
 Returns 1 for User win
