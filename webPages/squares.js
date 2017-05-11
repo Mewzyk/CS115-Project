@@ -13,18 +13,18 @@ var board = d3.select("body").append("svg")
 //object that holds the values specific for each rectangle
 //Used to feed into the .selectAll in next line
 //replace colored rect options with rock, paper, scissor images
-var choices = [{color: "red", value: "0", transform: "translate(0,0)", stroke: 'none'},
-			   {color: "blue", value: "1", transform: "translate(150,0)", stroke: 'none'},
-			   {color: "black", value: "2", transform: "translate(300,0)", stroke: 'none'}];
+var choices = [{color: "red", value: 0, transform: "translate(0,0)", stroke: 'none'},
+			   {color: "black", value: 1, transform: "translate(150,0)", stroke: 'none'},
+			   {color: "blue", value: 2, transform: "translate(300,0)", stroke: 'none'}];
 
 // rock image option
 Image("rock", 0, 0);
 
 // scissor image option
-Image("scissor", 150, 0);
+Image("paper", 150, 0);
 
 // paper image option
-Image("paper", 300, 0);
+Image("scissor", 300, 0);
 
 //Enters the data in 'items' each into their own rectangle
 //Each line beyond enter() is executed once for each data point (so three times)
@@ -119,11 +119,11 @@ d3.select("body").append("svg")
 
 d3.select("body").append("p").text("Rules:");
 
-d3.select("body").append("p").text("Red beats Blue");
+d3.select("body").append("p").text("Rock beats Scissor");
 
-d3.select("body").append("p").text("Blue beats Black");
+d3.select("body").append("p").text("Scissor beats Paper");
 
-d3.select("body").append("p").text("Black beats Red");
+d3.select("body").append("p").text("Paper beats Rock");
 
 console.log(d3.selectAll('.rect'));
 
@@ -159,10 +159,10 @@ function click() {
     // reset comp choice
     Image('blank', 650, -25);
     
-    var box = ["red", "blue", "black"];
-    var RPS = ["rock", "scissor", "paper"]
+    var box = ["red", "blue", "black"]; // list of box colors
+    var RPS = ["rock", "paper", "scissor"]; // list of RPS options
     for (i = 0; i < 3; i++) {
-        if (getColor(userChoice) == box[i]) {
+        if (getColor(userChoice) == box[i]) { 
             d3.selectAll('.you').text("You chose: " + Image(RPS[i], 500, 0));
         }
         if (getColor(compChoice) == box[i]) {
@@ -245,9 +245,9 @@ function Image(choice, x, y) {
         return choice;
     }   
     // scissor
-    if (choice == 'scissor') {
+    if (choice == 'paper') {
         var img = board.append("svg:image") 
-            .attr("xlink:href", "http://www.clipartbest.com/cliparts/KTn/Xj6/KTnXj6Mgc.png")
+            .attr("xlink:href", "http://www.clipartbest.com/cliparts/biy/LEM/biyLEMk4T.png")
             .attr("width", 100)
             .attr("height", 100)
             .attr("x", x)
@@ -257,9 +257,9 @@ function Image(choice, x, y) {
         return choice;
     }
     // paper
-    if (choice == 'paper') {
+    if (choice == 'scissor') {
         var img = board.append("svg:image") 
-            .attr("xlink:href", "http://www.clipartbest.com/cliparts/biy/LEM/biyLEMk4T.png")
+            .attr("xlink:href", "http://www.clipartbest.com/cliparts/KTn/Xj6/KTnXj6Mgc.png")
             .attr("width", 100)
             .attr("height", 100)
             .attr("x", x)
@@ -286,10 +286,12 @@ Returns 0 for Computer Win
 Returns -1 for Tie
 */
 function winner(userInput, compInput){
-	if(userInput == 2 && compInput == 0) return 1;
-	if(userInput == 0 && compInput == 2) return 0;
-	if(userInput < compInput) return 1;
-	if(compInput < userInput) return 0;
+	if(userInput == 0 && compInput == 2) return 1; // R > S
+    if(userInput == 1 && compInput == 0) return 1; // P > R
+    if(userInput == 2 && compInput == 1) return 1; // S > P
+    if(userInput == 0 && compInput == 1) return 0; // R < P
+    if(userInput == 1 && compInput == 2) return 0; // P < S
+    if(userInput == 2 && compInput == 0) return 0; // S < R
 	if(compInput == userInput) return -1;	
 }
 
@@ -297,5 +299,4 @@ function getColor(value){
 	if(value == 0) return 'red';
 	if(value == 1) return 'blue';
 	if(value == 2) return 'black';
-    if(value == "rock") return 'rock';
 }
