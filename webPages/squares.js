@@ -10,34 +10,46 @@ var board = d3.select("body").append("svg")
     .append("g")
 	.attr("transform", "translate(25, 25)");
 
+/*
 //object that holds the values specific for each rectangle
 //Used to feed into the .selectAll in next line
 //replace colored rect options with rock, paper, scissor images
+// OLD CODE REPLACED BY CODE BELOW THAT USES RPS IMAGES INSTEAD OF RECTS
 var choices = [{color: "red", value: 0, transform: "translate(0,0)", stroke: 'none'},
 			   {color: "black", value: 1, transform: "translate(150,0)", stroke: 'none'},
 			   {color: "blue", value: 2, transform: "translate(300,0)", stroke: 'none'}];
+*/
 
-// rock image option
-Image("rock", 0, 0);
+// object that holds the values/images for each RPS option
+// used to feed into teh .selectAll in the next line
+var images = [{value: 0, link: "https://img.clipartfest.com/201616f9cdd7deb314215b1be524d2a2_clipart-alpine-landscape-rock-rock-clipart_800-534.png", transform: "translate(0,0)" },
+              {value: 1, link: "http://www.clipartbest.com/cliparts/biy/LEM/biyLEMk4T.png", transform: "translate(150,0)"},
+              {value: 2, link: "http://www.clipartbest.com/cliparts/KTn/Xj6/KTnXj6Mgc.png", transform: "translate(300,0)"}];
 
-// scissor image option
-Image("paper", 150, 0);
+board.selectAll(("image")).data(images).enter()
+    .append(("image"))
+    .attr("xlink:href", function(d){return d.link})
+    .attr("width", 100)
+    .attr("height", 100)
+    .attr('transform', function(d){return d.transform})
+	.on("mouseover", mouseHover)
+	.on("mouseout", mouseOut)
+	.on("click", click);
 
-// paper image option
-Image("scissor", 300, 0);
-
+/*
 //Enters the data in 'items' each into their own rectangle
 //Each line beyond enter() is executed once for each data point (so three times)
 board.selectAll('.rect').data(choices).enter()
 	.append('rect')
-	.attr('width', '100')
-	.attr('height', '100')
-	.attr('stroke', 'none')
-	.attr('fill', function(d){return d.color})
+	.attr('width', '50')
+	.attr('height', '50')
+	.attr('stroke', 'black')
+	.attr('fill', 'white')
 	.attr('transform', function(d){return d.transform})
-	.on("mouseover", mouseHover)
-	.on("mouseout", mouseOut)
+	.on("mouseover", mouseHover2)
+	.on("mouseout", mouseOut2)
 	.on("click", click);
+*/
 
 //Svg wrapper to hold the square box. 
 var score = d3.select("body").append("svg")
@@ -130,16 +142,18 @@ console.log(d3.selectAll('.rect'));
 
 //on click function that is used for each square
 function click() {
-	
-	userChoice = d3.select(this).datum().value;
-	compChoice = computerChoice();
     
-	//implement display computer choice to html here.
+	userChoice = d3.select(this).datum().value; // user choice
+	compChoice = computerChoice(); // computer choice 
+    
+	// determine outcome and save result as a numeric value that can be further interpretted 
 	chickenDinner = winner(userChoice, compChoice);
 	
 	console.log(chickenDinner);
+    // Tie
 	if(chickenDinner < 0) d3.selectAll('.status').text("Status: Tie!");
 	
+    // User Loses
 	if(chickenDinner == 0){
 		console.log(lose);
 		lose = lose + 1;
@@ -148,6 +162,7 @@ function click() {
 		console.log(lose);
 	}
 	
+    // User Wins
 	if(chickenDinner == 1){
 		wins = wins + 1;
 		d3.selectAll('.status').text("Status: You win!");
@@ -159,13 +174,12 @@ function click() {
     // reset comp choice
     Image('blank', 650, -25);
     
-    var box = ["red", "blue", "black"]; // list of box colors
     var RPS = ["rock", "paper", "scissor"]; // list of RPS options
     for (i = 0; i < 3; i++) {
-        if (getColor(userChoice) == box[i]) { 
+        if (getColor(userChoice) == RPS[i]) { 
             d3.selectAll('.you').text("You chose: " + Image(RPS[i], 500, 0));
         }
-        if (getColor(compChoice) == box[i]) {
+        if (getColor(compChoice) == RPS[i]) {
             d3.selectAll('.computer').text("Computer chose: " + Image(RPS[i], 650, 0));
         }  
     }
@@ -242,7 +256,6 @@ function Image(choice, x, y) {
             .attr("y",y)
             .on("mouseover", mouseHover)
             .on("mouseout", mouseOut);
-        return choice;
     }   
     // scissor
     if (choice == 'paper') {
@@ -254,7 +267,6 @@ function Image(choice, x, y) {
             .attr("y", y)
             .on("mouseover", mouseHover)
             .on("mouseout", mouseOut);
-        return choice;
     }
     // paper
     if (choice == 'scissor') {
@@ -266,7 +278,6 @@ function Image(choice, x, y) {
             .attr("y", y)
             .on("mouseover", mouseHover)
             .on("mouseout", mouseOut);
-        return choice;
     }     
     // blank reset
     if (choice == 'blank') {
@@ -277,6 +288,7 @@ function Image(choice, x, y) {
             .attr("x", x)
             .attr("y",y);
     }
+    return choice;
 }
 
 
@@ -296,7 +308,7 @@ function winner(userInput, compInput){
 }
 
 function getColor(value){
-	if(value == 0) return 'red';
-	if(value == 1) return 'blue';
-	if(value == 2) return 'black';
+	if(value == 0) return 'rock';
+	if(value == 1) return 'paper';
+	if(value == 2) return 'scissor';
 }
