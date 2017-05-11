@@ -176,52 +176,21 @@ function click() {
     
     var RPS = ["rock", "paper", "scissor"]; // list of RPS options
     for (i = 0; i < 3; i++) {
-        if (getColor(userChoice) == RPS[i]) { 
+        if (getChoice(userChoice) == RPS[i]) { 
             d3.selectAll('.you').text("You chose: " + Image(RPS[i], 500, 0));
         }
-        if (getColor(compChoice) == RPS[i]) {
+    }
+    for (i = 0; i < 3; i++) {
+        if (getChoice(compChoice) == RPS[i]) {
             d3.selectAll('.computer').text("Computer chose: " + Image(RPS[i], 650, 0));
         }  
     }
-    
-    /*
-    // OLD CODE IS REPLACED BY ABOVE CODE
-    // if user chose red
-    if(getColor(userChoice) == 'red') {
-        d3.selectAll('.you').text("You chose: " + Image("rock", 500, 0));
-    }
-    
-    // if user chose blue/scissor
-    if(getColor(userChoice) == 'blue') {
-        d3.selectAll('.you').text("You chose: " + Image("scissor", 500, 0));
-    }
-    
-    // if user chose black/paper
-    if(getColor(userChoice) == 'black') {
-        d3.selectAll('.you').text("You chose: " + Image("paper", 500, 0));
-    }
-
-    // if computer chose red/rock
-    if(getColor(compChoice) == 'red') {
-        d3.selectAll('.computer').text("Computer chose: " + Image("rock", 650, 0));
-    }
-    
-    // if computer chose blue/scissor
-    if(getColor(compChoice) == 'blue') {
-        d3.selectAll('.computer').text("Computer chose: " + Image("scissor", 650, 0));
-    }
-    
-    // if computer chose black/paper
-    if(getColor(compChoice) == 'black') {
-        d3.selectAll('.computer').text("Computer chose: " + Image("paper", 650, 0));
-    }
-    */
-    
 }
 
 /**
 Following two functions are assigned to each square and basically just increase/decrease the size of the squares on hover.
 */
+
 function mouseHover(){
 	d3.select(this)
 			.transition()
@@ -240,13 +209,43 @@ function mouseOut(){
 
 //RNG function
 function computerChoice(){
-	return Math.floor(3 * Math.random());
+	return Math.floor(3 * Math.random()); // randomly choose a number between 0 and 2 for the computer's choice
 }
 
 // displays the options as well as user/computer choices
 // parameters: choice = rock, paper, scissor; x = x data; y = y data
 function Image(choice, x, y) {
-    // rock
+    
+    RPS = ['rock', 'paper', 'scissor'];
+    links = ["https://img.clipartfest.com/201616f9cdd7deb314215b1be524d2a2_clipart-alpine-landscape-rock-rock-clipart_800-534.png", "http://www.clipartbest.com/cliparts/biy/LEM/biyLEMk4T.png", "http://www.clipartbest.com/cliparts/KTn/Xj6/KTnXj6Mgc.png"]; // links are in the order RPS
+    
+    for (i = 0; i < 3; i++) {
+        if (choice == RPS[i]) {
+            var img = board.append("svg:image")
+                .attr("xlink:href", links[i])
+                .attr("width", 100)
+                .attr("height", 100)
+                .attr("x", x)
+                .attr("y",y)
+                .on("mouseover", mouseHover)
+                .on("mouseout", mouseOut);
+        }   
+    } 
+    
+    // blank reset
+    if (choice == 'blank') {
+        var img = board.append("svg:image")
+            .attr("xlink:href", "https://s-media-cache-ak0.pinimg.com/236x/ef/fc/f6/effcf6728d028df02850fe65a458189e.jpg")
+            .attr("width", 100)
+            .attr("height", 200)
+            .attr("x", x)
+            .attr("y",y);
+    }
+    
+    return choice;
+    
+    /*
+    // OLD CODE REPLACED BY THE ABOVE 
     if (choice == 'rock') {
         var img = board.append("svg:image")
             .attr("xlink:href", "https://img.clipartfest.com/201616f9cdd7deb314215b1be524d2a2_clipart-alpine-landscape-rock-rock-clipart_800-534.png")
@@ -279,16 +278,8 @@ function Image(choice, x, y) {
             .on("mouseover", mouseHover)
             .on("mouseout", mouseOut);
     }     
-    // blank reset
-    if (choice == 'blank') {
-        var img = board.append("svg:image")
-            .attr("xlink:href", "https://s-media-cache-ak0.pinimg.com/236x/ef/fc/f6/effcf6728d028df02850fe65a458189e.jpg")
-            .attr("width", 100)
-            .attr("height", 200)
-            .attr("x", x)
-            .attr("y",y);
-    }
     return choice;
+    */
 }
 
 
@@ -307,7 +298,7 @@ function winner(userInput, compInput){
 	if(compInput == userInput) return -1;	
 }
 
-function getColor(value){
+function getChoice(value){
 	if(value == 0) return 'rock';
 	if(value == 1) return 'paper';
 	if(value == 2) return 'scissor';
