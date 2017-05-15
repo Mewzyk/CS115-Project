@@ -17,9 +17,16 @@ def index():
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
     """
-    response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
+    response.flash = T("Welcome to RPSOnline!")
+    return dict()
 
+
+@auth.requires_login()
+def profile():
+    form = SQLFORM(db.profile,
+    labels= {'RPS': "Favorite Choice", 'pic': "Profile Picture", 'body': "Bio"},
+                 submit_button = 'Complete profile')
+    return dict(form=form)
 
 def user():
     """
@@ -57,5 +64,3 @@ def call():
     supports xml, json, xmlrpc, jsonrpc, amfrpc, rss, csv
     """
     return service()
-
-
