@@ -20,13 +20,26 @@ def index():
     response.flash = T("Welcome to RPSOnline!")
     return dict()
 
-
 @auth.requires_login()
 def createProfile():
     form = SQLFORM(db.profile,
-    labels= {'RPS': "Favorite Choice", 'pic': "Profile Picture", 'body': "Bio"},
-                 submit_button = 'Complete profile')
+    labels= {'RPS': "Favorite Choice", 'pic': "Profile Picture", 'body': "Bio"})
+    
+    if form.process().accepted:
+        session.flash = 'form accepted'
+        redirect(URL('play.html'))
+    elif form.errors:
+        response.flash = 'form has errors'
+    else:
+        response.flash = 'Please fill the form'
+
     return dict(form=form)
+
+def play():
+    return dict()
+
+def profile():
+    return dict()
 
 def user():
     """

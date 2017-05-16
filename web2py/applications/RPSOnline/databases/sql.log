@@ -64,3 +64,6 @@ CREATE TABLE profile(
     created_on TIMESTAMP
 );
 success!
+DELETE FROM profile;
+DELETE FROM sqlite_sequence WHERE name='profile';
+success!

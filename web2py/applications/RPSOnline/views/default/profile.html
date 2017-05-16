@@ -1,4 +1,15 @@
 {{extend 'layout.html'}}
+
+{{block header}}
+    <header class="container-fluid background">R
+      <div class="jumbotron text-center">
+        <h1>Profile
+          <small>{{=response.subtitle or ''}}</small></h1>
+        {{pass}}
+      </div>
+    </header>
+{{end}}
+
 {{if auth.user_id:}}
 <h2 class="welcome">{{=db.auth_user[auth.user_id].first_name}}  {{=db.auth_user[auth.user_id].last_name}}</h2>
 

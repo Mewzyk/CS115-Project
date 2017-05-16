@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>D3 CSV</title>
+</head>
+<body>
+
+<script src="../d3.v3.js"></script>
+<script type="text/javascript">
+
+var currentLine = 0;
+ 
+var svg = d3.select("body")
+  .append("svg")
+  .append("g")
+  .attr("transform", "translate(450,350)");
+ 
+d3.text("poem", function(poem) {
+  var data = poem.split("\n");
+  var lines = svg.selectAll("text")
+    .data(data)
+    .enter().append("text")
+    .text(String)
+    .attr("x", function(d,i) { return 2*currentLine*(i-currentLine); })
+    .attr("y", function(d,i) { return 50*(i+1); })
+    .style("opacity", function(d,i) { return 1/Math.pow((i+1),1.5); })
+    .style("fill", "red")
+    .attr("transform", function(d,i) { return "rotate(" + Math.pow(currentLine-i,2) + ")" })
+ 
+  setInterval(rollText, 1150);
+ 
+  function rollText() {
+    currentLine++;
+ 
+    svg.transition()
+       .duration(700)
+       .ease("sin")
+       .attr("transform", "translate(450," + (350-(50*currentLine)) + ")");
+ 
+     lines.transition()
+       .duration(800)
+       .ease("sin")
+       .style("opacity", function(d,i) { return 1/Math.pow((Math.abs(currentLine-i)+1),1.5); })
+       .attr("transform", function(d,i) { return "rotate(" + Math.pow(currentLine-i,2) + ")" })
+       .attr("x", function(d,i) { return 2*currentLine*(i-currentLine); })
+  };
+});
+</script>
+<style>
+svg {
+  height: 800px;
+}
+svg text {
+  font-size: 28px;
+}
+</style>
+</body>
+</html>
