@@ -51,3 +51,5 @@
 [2017-04-25 18:36:13] EDIT RPSOnline/models/db.py: 0
 [2017-04-25 18:36:24] EDIT RPSOnline/models/db.py: 0
 [2017-05-16 18:01:28] DELETE RPSOnline/models/menu.py: -121
+[2017-05-16 18:05:08] CREATE menu.py: 0
+[2017-05-16 18:05:17] EDIT RPSOnline/models/menu.py: 121
