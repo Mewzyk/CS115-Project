@@ -50,3 +50,4 @@
 [2017-04-25 00:19:37] EDIT RPSOnline/views/default/createProfile.html: 1
 [2017-04-25 18:36:13] EDIT RPSOnline/models/db.py: 0
 [2017-04-25 18:36:24] EDIT RPSOnline/models/db.py: 0
+[2017-05-16 18:01:28] DELETE RPSOnline/models/menu.py: -121
