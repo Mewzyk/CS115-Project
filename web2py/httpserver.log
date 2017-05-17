@@ -912,3 +912,14 @@ TTP/1.1, 200, 0.274000
 127.0.0.1, 2017-05-16 18:05:11, GET, /admin/default/files_menu, HTTP/1.1, 200, 0.247000
 127.0.0.1, 2017-05-16 18:05:13, GET, /RPSOnline/appadmin/hooks, HTTP/1.1, 200, 2.298000
 127.0.0.1, 2017-05-16 18:05:17, POST, /admin/default/edit/RPSOnline/models/menu.py, HTTP/1.1, 200, 0.050000
+127.0.0.1, 2017-05-16 18:06:15, GET, /, HTTP/1.1, 303, 0.003000
+127.0.0.1, 2017-05-16 18:06:15, GET, /welcome/default/index, HTTP/1.1, 200, 0.150000
+127.0.0.1, 2017-05-16 18:06:17, GET, /admin/default/site, HTTP/1.1, 200, 0.115000
+127.0.0.1, 2017-05-16 18:06:17, GET, /favicon.ico, HTTP/1.1, 400, 0.000000
+127.0.0.1, 2017-05-16 18:06:20, GET, /admin/default/design/RPSOnline, HTTP/1.1, 200, 0.182000
+127.0.0.1, 2017-05-16 18:06:20, GET, /favicon.ico, HTTP/1.1, 400, 0.000000
+127.0.0.1, 2017-05-16 18:06:27, GET, /admin/default/delete/RPSOnline/models/menu.py, HTTP/1.1, 200, 0.045000
+127.0.0.1, 2017-05-16 18:06:27, GET, /favicon.ico, HTTP/1.1, 400, 0.000000
+127.0.0.1, 2017-05-16 18:06:29, POST, /admin/default/delete/RPSOnline/models/menu.py, HTTP/1.1, 303, 0.043000
+127.0.0.1, 2017-05-16 18:06:29, GET, /admin/default/design/RPSOnline, HTTP/1.1, 200, 0.097000
+127.0.0.1, 2017-05-16 18:06:29, GET, /favicon.ico, HTTP/1.1, 400, 0.000000
