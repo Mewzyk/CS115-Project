@@ -122,3 +122,11 @@
 [2017-05-18 18:53:04] EDIT RPSOnline/views/default/createProfile.html: 16
 [2017-05-18 18:55:23] EDIT RPSOnline/views/default/play.html: 16
 [2017-05-18 18:55:46] EDIT RPSOnline/views/default/play.html: 0
+[2017-05-18 19:00:31] EDIT RPSOnline/views/default/createProfile.html: -9
+[2017-05-18 19:00:53] EDIT RPSOnline/views/default/profile.html: -9
+[2017-05-18 19:00:58] EDIT RPSOnline/views/default/play.html: -9
+[2017-05-18 19:01:04] EDIT RPSOnline/views/default/index.html: -9
+[2017-05-18 19:01:07] EDIT RPSOnline/views/default/createProfile.html: 0
+[2017-05-18 19:01:09] EDIT RPSOnline/views/default/user.html: 0
+[2017-05-18 19:02:03] EDIT RPSOnline/models/db.py: -3
+[2017-05-18 19:03:00] EDIT RPSOnline/views/default/index.html: -1

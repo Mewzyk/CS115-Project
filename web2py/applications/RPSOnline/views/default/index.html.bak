@@ -1,21 +1,12 @@
 {{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
 {{extend 'layout.html'}}
 
-{{block header}}
-    <header class="container-fluid background">R
-      <div class="jumbotron text-center">
-        <h1>RPSOnline
-          <small>{{=response.subtitle or ''}}</small></h1>
-        {{pass}}
-      </div>
-    </header>
-{{end}}
 
 <html>
     <head>
         <style>
             .button {
-                background-color: #FFFFFF;
+                background-color: #000000;
                 border: none;
                 color: white;
                 padding: 15px 32px;
