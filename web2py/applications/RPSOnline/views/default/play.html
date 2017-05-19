@@ -31,6 +31,34 @@
 var wins = 0;
 var lose = 0;
 
+//sorry the indentation is so bad, i will fix it later with a change in editor
+
+/*Node in a doubly-linked list that stores player choice and the result.
+Logging is the same format used elsewhere: -1 for tie, 0 for loss, 1 for
+win. */
+function gameNode(choice, result){
+  this.choice = choice; this.result = result;
+  this.prev = null; this.next = null;
+}
+
+/*The doubly-linked list structure itself.  The limit specifies how much can
+be stored before it begins to throw itself away. This is gong to be used for
+database storing and for training higher-level bots.*/
+function gameNodeList(limit){
+  this.limit = limit; this.wins = 0; this.losses = 0; this.draws = 0;
+  this.head = null; this.tail = null;
+  if (this.limit <= 0) this.limitless = true;
+		    else this.limitless = false;
+
+  //wins, losses, draws
+  this.rockData = [0, 0, 0];
+  this.paperData = [0, 0, 0];
+  this.scissorsData = [0, 0, 0];
+  this.winData = [this.rockData, this.paperData, this.scissorsData];
+}
+
+
+		    
 //svg wrapper that holds the squares
 var board = d3.select("body").append("svg")
     .attr("width", 850)
