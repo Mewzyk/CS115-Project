@@ -17,6 +17,8 @@
     </style>
 </head>
 
+<body style="background-color:#DCDCDC;">
+    
 <a href="{{=URL('default', 'index')}}" class="button">Home Page</a>
 
 {{=SCRIPT(_type="text/javascript", _src=URL(c="static", f="js/d3.v3.js"))}}
@@ -328,3 +330,4 @@ function getChoice(value){
 }
             </script>                                               
 {{=BEAUTIFY(response._vars)}}
+</body>

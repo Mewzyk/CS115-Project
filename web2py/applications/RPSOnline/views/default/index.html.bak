@@ -19,8 +19,7 @@
             }
         </style>
     </head>
-    <body>
-        <a href="{{=URL('default', 'createProfile')}}" class="button">Create a profile</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <body style="background-color:powderblue;">
         <a href="{{=URL('default', 'play')}}" class="button">Play the game!</a>
     </body>
     

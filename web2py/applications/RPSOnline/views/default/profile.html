@@ -1,8 +1,9 @@
 {{extend 'layout.html'}}
-
+<body style="background-color:#DCDCDC;">
 {{if auth.user_id:}}
 <h2 class="welcome">{{=db.auth_user[auth.user_id].first_name}}  {{=db.auth_user[auth.user_id].last_name}}</h2>
 
 {{pass}}
 
 {{=BEAUTIFY(response._vars)}}
+</body>

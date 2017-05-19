@@ -2,28 +2,19 @@ import datetime
 
 db = DAL('sqlite://storage.sqlite')
 
-#auth
+#auth and added extra fields instead of profile db
 from gluon.tools import *
 auth = Auth(db)
-auth.define_tables()
+auth.settings.extra_fields['auth_user']= [
+    Field('username'),
+    Field('pic', 'upload'),
+    Field('RPS'),
+    Field('body', 'text'),
+    Field('created_on', 'datetime', default=request.now)]
+auth.define_tables(username=False)
 crud = Crud(db)
 
-#database for profile
-#Created on for "User since: "
-#RPS for favorite choice
-db.define_table('profile',
-                Field('user_id', 'reference auth_user', default=auth.user_id),
-                Field('username'),
-                Field('pic', 'upload'),
-                Field('RPS'),
-                Field('body', 'text'),
-                Field('created_on', 'datetime', default=request.now),
-                format='%(name)s')
-
-
-#profile validators
-db.profile.username.requires = IS_NOT_IN_DB(db, 'profile.username')
-db.profile.username.requires = IS_NOT_EMPTY()
-db.profile.user_id.readable = db.profile.user_id.writable = False
-db.profile.created_on.readable = db.profile.created_on.writable = False
-db.profile.RPS.requires =  IS_IN_SET(["Rock", "Paper", "Scissors"])
+db.auth_user.username.requires = IS_NOT_IN_DB(db, 'auth_user.username')
+db.auth_user.username.requires = IS_NOT_EMPTY()
+db.auth_user.created_on.readable = db.auth_user.created_on.writable = False
+db.auth_user.RPS.requires =  IS_IN_SET(["Rock", "Paper", "Scissors"])
