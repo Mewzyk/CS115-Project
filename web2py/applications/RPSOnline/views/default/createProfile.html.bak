@@ -1,5 +1,21 @@
 {{extend 'layout.html'}}
 
+<head>
+    <style>
+        .button {
+            background-color: #000000;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    </style>
+</head>
 {{block header}}
     <header class="container-fluid background">R
       <div class="jumbotron text-center">
@@ -14,9 +30,9 @@
 <h2 class="welcome">{{=db.auth_user[auth.user_id].first_name}}  {{=db.auth_user[auth.user_id].last_name}}</h2>
 
 
-<a href="{{=URL('default', 'index')}}">Home Page</a>
+<a href="{{=URL('default', 'index')}}" class="button">Home Page</a>
 
-<h2>Input form</h2>
+<h2><!--Input form--></h2>
 {{=form}}
 
 {{pass}}
