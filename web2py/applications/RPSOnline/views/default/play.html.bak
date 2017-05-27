@@ -14,6 +14,7 @@
             margin: 4px 2px;
             cursor: pointer;
         }
+        
     </style>
 </head>
 
@@ -24,16 +25,45 @@
 {{=SCRIPT(_type="text/javascript", _src=URL(c="static", f="js/d3.v3.js"))}}
 
 <!-- Change the title below: REQUIRED-->
-    <h1 style = "color:#3030FF"><bold>Rock Paper Scissors</bold></h1>
+    
+    <!--<h1 style = "color:#3030FF"><bold>Rock Paper Scissors</bold></h1>-->
+    
+    
     <!-- Your D3.js code for making a Bar Graph -->
 <script type="text/javascript">
 
 var wins = 0;
 var lose = 0;
 
+//sorry the indentation is so bad, i will fix it later with a change in editor
+
+/*Node in a doubly-linked list that stores player choice and the result.
+Logging is the same format used elsewhere: -1 for tie, 0 for loss, 1 for
+win. */
+function gameNode(choice, result){
+  this.choice = choice; this.result = result;
+  this.prev = null; this.next = null;
+}
+
+/*The doubly-linked list structure itself.  The limit specifies how much can
+be stored before it begins to throw itself away. This is gong to be used for
+database storing and for training higher-level bots.*/
+function gameNodeList(limit){
+  this.limit = limit; this.wins = 0; this.losses = 0; this.draws = 0;
+  this.head = null; this.tail = null;
+  if (this.limit <= 0) this.limitless = true;
+		    else this.limitless = false;
+
+  //wins, losses, draws
+  this.rockData = [0, 0, 0];
+  this.paperData = [0, 0, 0];
+  this.scissorsData = [0, 0, 0];
+  this.winData = [this.rockData, this.paperData, this.scissorsData];
+}
+		    
 //svg wrapper that holds the squares
 var board = d3.select("body").append("svg")
-    .attr("width", 850)
+    .attr("width", 1300)
     .attr("height", 150)
 	.style("display", "block")
     .append("g")
@@ -52,9 +82,9 @@ var choices = [{color: "red", value: 0, transform: "translate(0,0)", stroke: 'no
 // object that holds the values/images for each RPS option
 // used to feed into teh .selectAll in the next line
 var images = [{value: 0, link: "https://img.clipartfest.com/201616f9cdd7deb314215b1be524d2a2_clipart-alpine-landscape-rock-rock-clipart_800-534.png", transform: "translate(0,0)" },
-              {value: 1, link: "http://www.clipartbest.com/cliparts/biy/LEM/biyLEMk4T.png", transform: "translate(150,0)"},
+              {value: 1, link: "https://www.rocknwater.com/wp-content/uploads/icon-paper-document-fold-redirect-pdf.png", transform: "translate(150,0)"},
               {value: 2, link: "http://www.clipartbest.com/cliparts/KTn/Xj6/KTnXj6Mgc.png", transform: "translate(300,0)"}];
-
+    
 board.selectAll(("image")).data(images).enter()
     .append(("image"))
     .attr("xlink:href", function(d){return d.link})
@@ -63,8 +93,31 @@ board.selectAll(("image")).data(images).enter()
     .attr('transform', function(d){return d.transform})
 	.on("mouseover", mouseHover)
 	.on("mouseout", mouseOut)
-	.on("click", click);
-
+	.on("click", click);   
+    
+    
+board.append('rect')
+	.attr('width', '180')
+	.attr('height', '120')
+	.attr('fill', 'none')
+	.attr('stroke', 'green')
+	.attr('stroke-width', '2')
+	.attr("transform", "translate(800,0)");
+   
+// place icon for user level
+board.append("svg:image")
+    .attr("xlink:href", "http://www.aapexshow.com/2017//custom/images/bronze.png")
+    .attr("width", 100)
+    .attr("height", 100)
+    .attr("x", 870)
+    .attr("y",10);
+    
+//Text that displays the user level
+board.append("text")	
+    .text("Your level: ")
+	.attr("font-size", "10")
+	.attr("transform", "translate(810, 65)")
+	.classed("level", true);
 /*
 //Enters the data in 'items' each into their own rectangle
 //Each line beyond enter() is executed once for each data point (so three times)
@@ -82,7 +135,7 @@ board.selectAll('.rect').data(choices).enter()
 
 //Svg wrapper to hold the square box. 
 var score = d3.select("body").append("svg")
-    .attr("width", 800)
+    .attr("width", 1300)
     .attr("height", 100)
 	.attr("transform", "translate(25,25)")
 	.style("display", "block")
@@ -90,7 +143,7 @@ var score = d3.select("body").append("svg")
 
 //rectangle border around the svg
 score.append('rect')
-	.attr('width', '800')
+	.attr('width', '1005')
 	.attr('height', '80')
 	.attr('fill', 'none')
 	.attr('stroke', 'black')
@@ -101,13 +154,17 @@ score.append('rect')
 score.append("text")
 	.text("Wins: ")
 	.attr("font-size", "20")
+    .attr("stroke", "red")
+    .attr("fill", "red")
 	.attr("transform", "translate(5,17)")
 	.classed("wins", true);
 
 //Text that holds losses
 score.append("text")
-	.text("Loses: ")
+	.text("Losses: ")
 	.attr("font-size", "20")
+    .attr("stroke", "blue")
+    .attr("fill", "blue")
 	.attr("transform", "translate(5,45)")
 	.classed("loss", true);
 
@@ -115,6 +172,8 @@ score.append("text")
 score.append("text")
 	.text("Status: ")
 	.attr("font-size", "20")
+    .attr("fill", "purple")
+    .attr("stroke", "purple")
 	.attr("transform", "translate(5,73)")
 	.classed("status", true);
 
@@ -122,16 +181,38 @@ score.append("text")
 score.append("text")
 	.text("You chose: ")
 	.attr("font-size", "10")
-	.attr("transform", "translate(535,17)")
+	.attr("transform", "translate(520,17)")
 	.classed("you", true);
 
 //Text that holds the computer choice text
 score.append("text")
 	.text("Computer chose: ")
 	.attr("font-size", "10")
-	.attr("transform", "translate(685,17)")
+	.attr("transform", "translate(670,17)")
 	.classed("computer", true);
 
+//Text that holds the outcome text
+score.append("text")
+    .text("")
+    .attr("font-size", "12")
+    .attr("stroke", "green")
+    .attr("fill", "green")
+    .attr('stroke-width', '.5')
+	.attr("transform", "translate(520,50)")  
+    .classed("outcome", true);
+    
+var levelInfo = ['bronze', 'silver', 'gold', 'platinum'];
+var valueInfo = ['0','4','8','12'];
+var transInfo = ["translate(855,10)", "translate(855,30)", "translate(855,50)", "translate(855,70)"];
+    
+for (i = 0; i < 4; i++) {
+    score.append("text")	
+        .text(levelInfo[i] + ": " +valueInfo[i] + " or more wins")
+        .attr("font-size", "10")
+        .attr("transform", transInfo[i])
+        .classed("level", true);  
+}
+    
 /**
 USE THE NEXT THREE LINES AS EXAMPLES FOR HOW TO DYNAMICALLY EDIT THE HTML
 */
@@ -156,8 +237,7 @@ d3.selectAll('.computer')
 d3.select("body").append("svg")
     .attr("width", 400)
     .attr("height", 50);
-
-
+    
 d3.select("body").append("p").text("Rules:");
 
 d3.select("body").append("p").text("Rock beats Scissor");
@@ -180,8 +260,14 @@ function click() {
 	
 	console.log(chickenDinner);
     // Tie
-	if(chickenDinner < 0) d3.selectAll('.status').text("Status: Tie!");
+	if(chickenDinner < 0) {
+        d3.selectAll('.status').text("Status: Tie!");
+        d3.selectAll('.outcome').text("It's a tie!");
+    }
 	
+    var losePhrases = ["Dangit, I lost!", "Wow, you beat me!", "I'll win next time!", "You're good at this game!", "Hmm, I should try something else!", "How do you keep winning?", "You got me again!", "Man, I'm losing!"];
+    var winPhrases = ["HA, I won!", "Gotcha!", "Better luck next time!", "Dude, you suck!", "Whoa, I'm pretty good!", "C'mon, choose something else!", "Man, do you even play?", "Yes, I won again!"];
+
     // User Loses
 	if(chickenDinner == 0){
 		console.log(lose);
@@ -189,19 +275,23 @@ function click() {
 		d3.selectAll('.status').text("Status: You lose!");
 		d3.selectAll('.loss').text("Losses: " + lose);
 		console.log(lose);
+        d3.selectAll('.outcome').text("Computer Says: " + winPhrases[Math.floor(8 * Math.random())]);
 	}
-	
+    
     // User Wins
 	if(chickenDinner == 1){
 		wins = wins + 1;
 		d3.selectAll('.status').text("Status: You win!");
 		d3.selectAll('.wins').text("Wins: " + wins);
+        d3.selectAll('.outcome').text("Computer Says: " + losePhrases[Math.floor(8 * Math.random())]);
 	}
     
     // reset user choice
-    Image('blank', 500, -25);
+    Image('blank', 500, -40);
+    Image('blank', 500, -70);
     // reset comp choice
-    Image('blank', 650, -25);
+    Image('blank', 650, -40);
+    Image('blank', 650, -70);
     
     var RPS = ["rock", "paper", "scissor"]; // list of RPS options
     for (i = 0; i < 3; i++) {
@@ -214,6 +304,9 @@ function click() {
             d3.selectAll('.computer').text("Computer chose: " + Image(RPS[i], 650, 0));
         }  
     }
+    
+    // Update level board as necessary
+    Medal(wins);
 }
 
 /**
@@ -236,6 +329,7 @@ function mouseOut(){
 			.attr('stroke', 'none');
 }
 
+
 //RNG function
 function computerChoice(){
 	return Math.floor(3 * Math.random()); // randomly choose a number between 0 and 2 for the computer's choice
@@ -246,11 +340,13 @@ function computerChoice(){
 function Image(choice, x, y) {
     
     RPS = ['rock', 'paper', 'scissor'];
-    links = ["https://img.clipartfest.com/201616f9cdd7deb314215b1be524d2a2_clipart-alpine-landscape-rock-rock-clipart_800-534.png", "http://www.clipartbest.com/cliparts/biy/LEM/biyLEMk4T.png", "http://www.clipartbest.com/cliparts/KTn/Xj6/KTnXj6Mgc.png"]; // links are in the order RPS
-    
+    links = ["https://img.clipartfest.com/201616f9cdd7deb314215b1be524d2a2_clipart-alpine-landscape-rock-rock-clipart_800-534.png", "https://www.rocknwater.com/wp-content/uploads/icon-paper-document-fold-redirect-pdf.png", "http://www.clipartbest.com/cliparts/KTn/Xj6/KTnXj6Mgc.png"]; // links are in the order RPS
+
     for (i = 0; i < 3; i++) {
         if (choice == RPS[i]) {
             var img = board.append("svg:image")
+            //var img = board.selectAll(("choice")).data("links").enter()
+             //   .add(("choice"))
                 .attr("xlink:href", links[i])
                 .attr("width", 100)
                 .attr("height", 100)
@@ -264,7 +360,7 @@ function Image(choice, x, y) {
     // blank reset
     if (choice == 'blank') {
         var img = board.append("svg:image")
-            .attr("xlink:href", "https://s-media-cache-ak0.pinimg.com/236x/ef/fc/f6/effcf6728d028df02850fe65a458189e.jpg")
+            .attr("xlink:href", "http://www.yarwoodleather.com/wp-content/uploads/2016/12/Aneurin-Grey.jpg")
             .attr("width", 100)
             .attr("height", 200)
             .attr("x", x)
@@ -272,46 +368,33 @@ function Image(choice, x, y) {
     }
     
     return choice;
-    
-    /*
-    // OLD CODE REPLACED BY THE ABOVE 
-    if (choice == 'rock') {
-        var img = board.append("svg:image")
-            .attr("xlink:href", "https://img.clipartfest.com/201616f9cdd7deb314215b1be524d2a2_clipart-alpine-landscape-rock-rock-clipart_800-534.png")
-            .attr("width", 100)
-            .attr("height", 100)
-            .attr("x", x)
-            .attr("y",y)
-            .on("mouseover", mouseHover)
-            .on("mouseout", mouseOut);
-    }   
-    // scissor
-    if (choice == 'paper') {
-        var img = board.append("svg:image") 
-            .attr("xlink:href", "http://www.clipartbest.com/cliparts/biy/LEM/biyLEMk4T.png")
-            .attr("width", 100)
-            .attr("height", 100)
-            .attr("x", x)
-            .attr("y", y)
-            .on("mouseover", mouseHover)
-            .on("mouseout", mouseOut);
-    }
-    // paper
-    if (choice == 'scissor') {
-        var img = board.append("svg:image") 
-            .attr("xlink:href", "http://www.clipartbest.com/cliparts/KTn/Xj6/KTnXj6Mgc.png")
-            .attr("width", 100)
-            .attr("height", 100)
-            .attr("x", x)
-            .attr("y", y)
-            .on("mouseover", mouseHover)
-            .on("mouseout", mouseOut);
-    }     
-    return choice;
-    */
 }
 
-
+function Medal(wins) {
+    // displays the player's current level as text as well as a badge
+    
+    numWins = [0, 4, 8, 12];
+    links = ["http://www.aapexshow.com/2017//custom/images/bronze.png", "https://static1.squarespace.com/static/56dc3f9cb654f9876576bab7/t/58af37a5d1758ef40fffbfc6/1487878063862/", "http://www.aapexshow.com/2017//custom/images/gold.png", "https://i2.wp.com/wordsowers.com/wp-content/uploads/2017/01/platinum-level.png?fit=562%2C563"]; // in the order BSGP
+    
+    for (i = 0; i < 4; i++) {
+        if (wins >= numWins[i]) {
+            // blank reset
+            board.append("svg:image")
+                .attr("xlink:href", "http://www.yarwoodleather.com/wp-content/uploads/2016/12/Aneurin-Grey.jpg")
+                .attr("width", 100)
+                .attr("height", 100)
+                .attr("x", 870)
+                .attr("y",10);
+            // new level icon
+            board.append("svg:image")
+                .attr("xlink:href", links[i])
+                .attr("width", 100)
+                .attr("height", 100)
+                .attr("x", 870)
+                .attr("y",10);
+        }
+    } 
+}
 
 function winner(userInput, compInput){
 	if(userInput == 0 && compInput == 2) return 1; // R > S

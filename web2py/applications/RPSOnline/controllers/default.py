@@ -22,22 +22,16 @@ def index():
 
 @auth.requires_login()
 def createProfile():
-    form = SQLFORM(db.profile,
-    labels= {'RPS': "Favorite Choice", 'pic': "Profile Picture", 'body': "Bio"})
-    
-    if form.process().accepted:
-        session.flash = 'form accepted'
-        redirect(URL('play.html'))
-    elif form.errors:
-        response.flash = 'form has errors'
-    else:
-        response.flash = 'Please fill the form'
 
-    return dict(form=form)
+    return dict()
+
+def stats():
+    return dict()
 
 def play():
     return dict()
 
+@auth.requires_login()
 def profile():
     return dict()
 
@@ -57,8 +51,15 @@ def user():
     to decorate functions that need access control
     also notice there is http://..../[app]/appadmin/manage/auth to allow administrator to manage users
     """
+        
     return dict(form=auth())
 
+def profile():
+    this_bio = auth.user.body
+    this_picture = auth.user.pic
+    #project_title ="title"
+    #project_body = "body"
+    return dict(picture=this_picture,bio=this_bio)
 
 @cache.action()
 def download():

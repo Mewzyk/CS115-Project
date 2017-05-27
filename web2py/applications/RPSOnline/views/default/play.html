@@ -6,27 +6,31 @@
             background-color: #000000;
             border: none;
             color: white;
-            padding: 15px 32px;
+            padding: 7px 16px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 16px;
+            font-size: 12px;
             margin: 4px 2px;
             cursor: pointer;
         }
+        
     </style>
 </head>
 
 <body style="background-color:#DCDCDC;">
     
 <a href="{{=URL('default', 'index')}}" class="button">Home Page</a>
+    <a href="{{=URL('default', 'profile')}}" class="button">View your Profile</a>
+        <a href="{{=URL('default', 'stats')}}" class="button">View the Leaderboard</a>
 
 {{=SCRIPT(_type="text/javascript", _src=URL(c="static", f="js/d3.v3.js"))}}
 
 <!-- Change the title below: REQUIRED-->
     
     <!--<h1 style = "color:#3030FF"><bold>Rock Paper Scissors</bold></h1>-->
-    <img src = 'http://rockpaperscissorshair.co.uk/img/logo-x2.png' style = "width:400px;height:200px;position:relative;left:200px">
+    
+    
     <!-- Your D3.js code for making a Bar Graph -->
 <script type="text/javascript">
 

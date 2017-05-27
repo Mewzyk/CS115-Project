@@ -7,9 +7,10 @@ from gluon.tools import *
 auth = Auth(db)
 auth.settings.extra_fields['auth_user']= [
     Field('username'),
-    Field('pic', 'upload'),
-    Field('RPS'),
-    Field('body', 'text'),
+    Field('pic', 'upload', uploadfield='picture_file', label='Profile Picture'),
+    Field('picture_file', 'blob'),
+    Field('RPS', label='Favorite Choice'),
+    Field('body', 'text', label='Biography'),
     Field('created_on', 'datetime', default=request.now)]
 auth.define_tables()
 crud = Crud(db)

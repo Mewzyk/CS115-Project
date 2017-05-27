@@ -1,0 +1,4 @@
+{{extend 'layout.html'}}
+<a href="{{=URL('default', 'index')}}" class="button">Home Page</a>
+<a href="{{=URL('default', 'play')}}" class="button">Play the game!</a>
+<a href="{{=URL('default', 'profile')}}" class="button">View your Profile</a>
