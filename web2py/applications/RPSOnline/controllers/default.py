@@ -53,10 +53,10 @@ def user():
     """
         
     return dict(form=auth())
-
+@auth.requires_login()
 def profile():
-    this_bio = auth.user.body
-    this_picture = auth.user.pic
+    this_bio = auth.settings.body
+    this_picture = auth.settings.pic
     #project_title ="title"
     #project_body = "body"
     return dict(picture=this_picture,bio=this_bio)
