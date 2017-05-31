@@ -56,10 +56,10 @@ def user():
 @auth.requires_login()
 def profile():
     this_bio = auth.settings.body
-    this_picture = auth.settings.pic
-    #project_title ="title"
-    #project_body = "body"
+    this_picture = auth.user.pic
     return dict(picture=this_picture,bio=this_bio)
+
+
 
 @cache.action()
 def download():

@@ -2,7 +2,6 @@
 
 <a href="{{=URL('default', 'index')}}" class="button">Home Page</a>
 <a href="{{=URL('default', 'play')}}" class="button">Play the game!</a>
-<a href="{{=URL('default', 'profile')}}" class="button">View your Profile</a>
         <a href="{{=URL('default', 'stats')}}" class="button">View the Leaderboard</a>
 <style>
             .info {
@@ -30,8 +29,7 @@
     <a class="info">{{=db.auth_user[auth.user_id].username}} </a>
     <br /><br />
         {{if picture:}}
-        <img width="150px"
-             src="{{=URL('download', args=picture)}}" />
+        <img width="150px" src="{{=URL('download', args=picture)}}" />
         {{else:}}
         <img width="120px"
              src="http://ctlatinonews.com/wp-content/uploads/missing-mcsanl.gov_.png" />
