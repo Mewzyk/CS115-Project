@@ -28,6 +28,7 @@ def createProfile():
 def stats():
     return dict()
 
+@auth.requires_login()
 def play():
     return dict()
 
