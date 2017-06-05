@@ -14,55 +14,44 @@
             margin: 4px 2px;
             cursor: pointer;
         }
-        
+            .bottom-three {
+                margin-bottom: 3cm
+            }
+            .container > div {
+                display: inline-block;
+                display: -moz-inline-box;
+                *display: inline; /* For IE7 */
+                zoom: 1; /* Trigger hasLayout */
+                width: 33%;
+                text-align: center;
+            }
+
     </style>
 </head>
 
 <body style="background-color:#DCDCDC;">
-    
-<a href="{{=URL('default', 'index')}}" class="button">Home Page</a>
-    <a href="{{=URL('default', 'profile')}}" class="button">View your Profile</a>
-        <a href="{{=URL('default', 'stats')}}" class="button">View the Leaderboard</a>
+
+        <div class="container">
+            <div><a href="{{=URL('default', 'index')}}" class="button">Return Home</a></div><div><a href="{{=URL('default', 'profile')}}" class="button">View Your Profile</a></div><div><a href="{{=URL('default', 'stats')}}" class="button">View the Leaderboard</a></div>
+        </div>
 
 {{=SCRIPT(_type="text/javascript", _src=URL(c="static", f="js/d3.v3.js"))}}
 
 <!-- Change the title below: REQUIRED-->
-    
+
     <!--<h1 style = "color:#3030FF"><bold>Rock Paper Scissors</bold></h1>-->
-    
-    
+
+
     <!-- Your D3.js code for making a Bar Graph -->
 <script type="text/javascript">
 
 var wins = 0;
 var lose = 0;
 
-//sorry the indentation is so bad, i will fix it later with a change in editor
+var lastChoice = -1; //the last choice of the user for the dummy bot
 
-/*Node in a doubly-linked list that stores player choice and the result.
-Logging is the same format used elsewhere: -1 for tie, 0 for loss, 1 for
-win. */
-function gameNode(choice, result){
-  this.choice = choice; this.result = result;
-  this.prev = null; this.next = null;
-}
 
-/*The doubly-linked list structure itself.  The limit specifies how much can
-be stored before it begins to throw itself away. This is gong to be used for
-database storing and for training higher-level bots.*/
-function gameNodeList(limit){
-  this.limit = limit; this.wins = 0; this.losses = 0; this.draws = 0;
-  this.head = null; this.tail = null;
-  if (this.limit <= 0) this.limitless = true;
-		    else this.limitless = false;
 
-  //wins, losses, draws
-  this.rockData = [0, 0, 0];
-  this.paperData = [0, 0, 0];
-  this.scissorsData = [0, 0, 0];
-  this.winData = [this.rockData, this.paperData, this.scissorsData];
-}
-		    
 //svg wrapper that holds the squares
 var board = d3.select("body").append("svg")
     .attr("width", 1300)
@@ -86,7 +75,7 @@ var choices = [{color: "red", value: 0, transform: "translate(0,0)", stroke: 'no
 var images = [{value: 0, link: "https://img.clipartfest.com/201616f9cdd7deb314215b1be524d2a2_clipart-alpine-landscape-rock-rock-clipart_800-534.png", transform: "translate(150,0)" },
               {value: 1, link: "https://www.rocknwater.com/wp-content/uploads/icon-paper-document-fold-redirect-pdf.png", transform: "translate(300,0)"},
               {value: 2, link: "http://www.clipartbest.com/cliparts/KTn/Xj6/KTnXj6Mgc.png", transform: "translate(450,0)"}];
-    
+
 board.selectAll(("image")).data(images).enter()
     .append(("image"))
     .attr("xlink:href", function(d){return d.link})
@@ -95,9 +84,9 @@ board.selectAll(("image")).data(images).enter()
     .attr('transform', function(d){return d.transform})
 	.on("mouseover", mouseHover)
 	.on("mouseout", mouseOut)
-	.on("click", click);   
-    
-    
+	.on("click", click);
+
+
 board.append('rect')
 	.attr('width', '180')
 	.attr('height', '120')
@@ -105,7 +94,7 @@ board.append('rect')
 	.attr('stroke', 'green')
 	.attr('stroke-width', '2')
 	.attr("transform", "translate(950,0)");
-   
+
 // place icon for user level
 board.append("svg:image")
     .attr("xlink:href", "http://www.aapexshow.com/2017//custom/images/bronze.png")
@@ -113,15 +102,15 @@ board.append("svg:image")
     .attr("height", 100)
     .attr("x", 1020)
     .attr("y",10);
-    
+
 //Text that displays the user level
-board.append("text")	
+board.append("text")
     .text("Your level: ")
 	.attr("font-size", "10")
 	.attr("transform", "translate(960, 65)")
 	.classed("level", true);
 
-//Svg wrapper to hold the square box. 
+//Svg wrapper to hold the square box.
 var score = d3.select("body").append("svg")
     .attr("width", 1300)
     .attr("height", 100)
@@ -186,24 +175,24 @@ score.append("text")
     .attr("stroke", "green")
     .attr("fill", "green")
     .attr("stroke-width", ".5")
-	.attr("transform", "translate(670,50)")  
+	.attr("transform", "translate(670,50)")
     .classed("outcome", true);
-    
+
 var levelInfo = ['bronze', 'silver', 'gold', 'platinum']; // types of levels
 var colorInfo = ['darksalmon', 'grey', '#F9F100', '#B2B1B1']; // colors used for each respective level
 var valueInfo = ['0','4','8','12']; // number of wins needed to reach each level
 var transformInfo = ["translate(1005,15)", "translate(1005,35)", "translate(1005,55)", "translate(1005,75)"]; // location of text
-    
+
 for (i = 0; i < 4; i++) {
-    score.append("text")	
+    score.append("text")
         .text(levelInfo[i] + ": " +valueInfo[i] + " or more wins")
         .attr("font-size", "10")
         .attr("transform", transformInfo[i])
         .attr("stroke", colorInfo[i])
         .attr("stroke-wdith", ".3")
-        .classed("level", true);  
+        .classed("level", true);
 }
-    
+
 /**
 USE THE NEXT THREE LINES AS EXAMPLES FOR HOW TO DYNAMICALLY EDIT THE HTML
 */
@@ -234,20 +223,20 @@ console.log(d3.selectAll('.rect'));
 
 //on click function that is used for each square
 function click() {
-    
+
 	userChoice = d3.select(this).datum().value; // user choice
-	compChoice = computerChoice(); // computer choice 
-    
-	// determine outcome and save result as a numeric value that can be further interpretted 
+	compChoice = computerChoice(); // computer choice
+
+	// determine outcome and save result as a numeric value that can be further interpretted
 	chickenDinner = winner(userChoice, compChoice);
-	
+
 	console.log(chickenDinner);
     // Tie
 	if(chickenDinner < 0) {
         d3.selectAll('.status').text("Status: Tie!");
         d3.selectAll('.outcome').text("It's a tie!");
     }
-	
+
     var losePhrases = ["Dangit, I lost!", "Wow, you beat me!", "I'll win next time!", "You're good at this game!", "Hmm, I should try something else!", "How do you keep winning?", "You got me again!", "Man, I'm losing!"];
     var winPhrases = ["Yes, I won!", "Gotcha!", "Better luck next time!", "Ha, you're not that good'!", "Whoa, I'm pretty good!", "C'mon, choose something else!", "You should practice more!", "Whoo, I'm winning!"];
 
@@ -260,7 +249,7 @@ function click() {
 		console.log(lose);
         d3.selectAll('.outcome').text("Computer Says: " + winPhrases[Math.floor(8 * Math.random())]);
 	}
-    
+
     // User Wins
 	if(chickenDinner == 1){
 		wins = wins + 1;
@@ -268,26 +257,27 @@ function click() {
 		d3.selectAll('.wins').text("Wins: " + wins);
         d3.selectAll('.outcome').text("Computer Says: " + losePhrases[Math.floor(8 * Math.random())]);
 	}
-    
+  lastChoice = userChoice; //for the dummy bot  - should be put in after winner is decided
+
     // reset user choice
     Image('blank', 650, -40);
     Image('blank', 650, -70);
     // reset comp choice
     Image('blank', 800, -40);
     Image('blank', 800, -70);
-    
+
     var RPS = ["rock", "paper", "scissor"]; // list of RPS options
     for (i = 0; i < 3; i++) {
-        if (getChoice(userChoice) == RPS[i]) { 
+        if (getChoice(userChoice) == RPS[i]) {
             d3.selectAll('.you').text("You chose: " + Image(RPS[i], 650, 0));
         }
     }
     for (i = 0; i < 3; i++) {
         if (getChoice(compChoice) == RPS[i]) {
             d3.selectAll('.computer').text("Computer chose: " + Image(RPS[i], 800, 0));
-        }  
+        }
     }
-    
+
     // Update level board as necessary
     Medal(wins);
 }
@@ -313,15 +303,23 @@ function mouseOut(){
 }
 
 
-//RNG function
-function computerChoice(){
-	return Math.floor(3 * Math.random()); // randomly choose a number between 0 and 2 for the computer's choice
+//RNG function - default difficulty is 0.  Can use this to test for other types
+//1 = dummy.  Will just do whatever you did last.
+function computerChoice(difficulty = 1){
+  console.log("difficulty = " + difficulty);
+  if (difficulty = 1){
+	  return Math.floor(3 * Math.random()); // randomly choose a number between 0 and 2 for the computer's choice
+  } else if (difficulty = 2){
+    if (lastChoice != -1) return lastChoice;
+    else return 0; //defaulting to rock is generally what humans do
+  }
+  else return Math.floor(3 * Math.random()); //for some reason difficulty is not set.
 }
 
 // displays the options as well as user/computer choices
 // parameters: choice = rock, paper, scissor; x = x data; y = y data
 function Image(choice, x, y) {
-    
+
     RPS = ['rock', 'paper', 'scissor'];
     links = ["https://img.clipartfest.com/201616f9cdd7deb314215b1be524d2a2_clipart-alpine-landscape-rock-rock-clipart_800-534.png", "https://www.rocknwater.com/wp-content/uploads/icon-paper-document-fold-redirect-pdf.png", "http://www.clipartbest.com/cliparts/KTn/Xj6/KTnXj6Mgc.png"]; // links are in the order RPS
 
@@ -337,9 +335,9 @@ function Image(choice, x, y) {
                 .attr("y",y)
                 .on("mouseover", mouseHover)
                 .on("mouseout", mouseOut);
-        }   
-    } 
-    
+        }
+    }
+
     // blank reset
     if (choice == 'blank') {
         var img = board.append("svg:image")
@@ -349,16 +347,16 @@ function Image(choice, x, y) {
             .attr("x", x)
             .attr("y",y);
     }
-    
+
     return choice;
 }
 
 function Medal(wins) {
     // displays the player's current level as text as well as a badge
-    
+
     numWins = [0, 4, 8, 12];
     links = ["http://www.aapexshow.com/2017//custom/images/bronze.png", "https://static1.squarespace.com/static/56dc3f9cb654f9876576bab7/t/58af37a5d1758ef40fffbfc6/1487878063862/", "http://www.aapexshow.com/2017//custom/images/gold.png", "https://i2.wp.com/wordsowers.com/wp-content/uploads/2017/01/platinum-level.png?fit=562%2C563"]; // in the order BSGP
-    
+
     for (i = 0; i < 4; i++) {
         if (wins >= numWins[i]) {
             // blank reset
@@ -376,7 +374,7 @@ function Medal(wins) {
                 .attr("x", 1020)
                 .attr("y",10);
         }
-    } 
+    }
 }
 
 function winner(userInput, compInput){
@@ -386,7 +384,7 @@ function winner(userInput, compInput){
     if(userInput == 0 && compInput == 1) return 0; // R < P
     if(userInput == 1 && compInput == 2) return 0; // P < S
     if(userInput == 2 && compInput == 0) return 0; // S < R
-	if(compInput == userInput) return -1;	
+	if(compInput == userInput) return -1;
 }
 
 function getChoice(value){
@@ -394,6 +392,6 @@ function getChoice(value){
 	if(value == 1) return 'paper';
 	if(value == 2) return 'scissor';
 }
-            </script>                                               
+            </script>
 {{=BEAUTIFY(response._vars)}}
 </body>
