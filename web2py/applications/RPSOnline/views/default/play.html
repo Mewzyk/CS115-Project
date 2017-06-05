@@ -50,6 +50,8 @@ var lose = 0;
 
 var lastChoice = -1; //the last choice of the user for the dummy bot
 
+
+
 //svg wrapper that holds the squares
 var board = d3.select("body").append("svg")
     .attr("width", 1300)
@@ -310,7 +312,7 @@ function computerChoice(difficulty = 0){
     if (lastChoice != -1) return lastChoice;
     else return 0; //defaulting to rock is generally what humans do
   }
-  
+
 }
 
 // displays the options as well as user/computer choices
