@@ -44,14 +44,14 @@
 
     <!-- Your D3.js code for making a Bar Graph -->
 <script type="text/javascript">
-
+/*
 //This is the node function in the historyList.  Just stores player and computer
 //choice.  Some ideas taken from http://blog.wolfram.com/2014/01/20/how-to-win-at-rock-paper-scissors/.
 function gameHistoryNode(dataPlayerChoice, dataComputerChoice){
   this.playerChoice = dataPlayerChoice; this.computerChoice = dataComputerChoice;
   this.prev = null; this.next = null;
 }
-/*
+
 //The actual linked list of game history.  This list is used for the computer
 //to predict human play.
 function gameHistoryList(historyMaxSize){
@@ -62,7 +62,7 @@ function gameHistoryList(historyMaxSize){
   //Check if the historylist is at maximum size
   this.overFull = function (){
     return this.size > this.maxSize;
-  }
+  };
 
   //prepends game result to the list
   this.prependGameResult = function(playerChoice, computerChoice){
@@ -74,13 +74,13 @@ function gameHistoryList(historyMaxSize){
     var newTail = this.tail.prev;
     newTail.next = null;
     this.tail = newTail;
-  }
+  };
 
   //This method returns, given playerChoice and computerChoice, a 3-array of
   //the choices the player would make next.  The bot is "dumb", in that it only
   //looks at the previous choices.  This is still just a basic bot but it makes an
   //attempt to read what a child might do.
-  this.getChoiceHistory(playerChoice, computerChoice){
+  this.getChoiceHistory = function (playerChoice, computerChoice){
     //there's no point at beginning at the head since it has no data for what's
     //after it
     var choiceHistoryResults = [0, 0, 0];
@@ -90,9 +90,10 @@ function gameHistoryList(historyMaxSize){
       }
     }
     return choiceHistoryResults;
-  }
-}*/
+  };
 
+}
+*/
 var wins = 0;
 var lose = 0;
 
