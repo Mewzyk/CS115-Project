@@ -45,48 +45,58 @@
     <!-- Your D3.js code for making a Bar Graph -->
 <script type="text/javascript">
 
-/*This is the node function in the historyList.  Just stores player and computer
-  choice.  Some ideas taken from http://blog.wolfram.com/2014/01/20/how-to-win-at-rock-paper-scissors/. */
-function createGameHistoryNode(dataPlayerChoice, dataComputerChoice){
-  this.dataPlayerChoice = dataPlayerChoice; this.dataComputerChoice = dataComputerChoice;
+//This is the node function in the historyList.  Just stores player and computer
+//choice.  Some ideas taken from http://blog.wolfram.com/2014/01/20/how-to-win-at-rock-paper-scissors/.
+function gameHistoryNode(dataPlayerChoice, dataComputerChoice){
+  this.playerChoice = dataPlayerChoice; this.computerChoice = dataComputerChoice;
   this.prev = null; this.next = null;
 }
-
-/*The actual linked list of game history.  This list is used for the computer
-  to predict human play.*/
-function createGameHistoryList(historyMaxSize){
-  this.historyMaxSize = historyMaxSize; this.historySize = 0; //current size
+/*
+//The actual linked list of game history.  This list is used for the computer
+//to predict human play.
+function gameHistoryList(historyMaxSize){
+  this.maxSize = historyMaxSize; this.size = 0; //current size
   this.head = null; this.tail = null; //pointing the tail away from a node causes
                                       //it to be cleaned by the garbage collector
-}
 
-//Some basic functions
-//max of 3-index array - useful for finding max wins when the data is reported
-//to the computer to make a choice
-function max3Array(choiceHistory){
-  if (choiceHistory[0] > choiceHistory[1]){
-    if (choiceHistory[0] > choiceHistory[2]) return choiceHistory[0];
-    else return choiceHistory[2];
-  } else if (choiceHistory[1] > choiceHistory[2]) return choiceHistory[1];
-  else return ChoiceHistory[2];
-}
+  //Check if the historylist is at maximum size
+  this.overFull = function (){
+    return this.size > this.maxSize;
+  }
 
-//Check if the historylist is at maximum size
-function gameHistoryListIsFull(gameHistoryList){
-  return gameHistoryList.historySize == gameHistoryList.historyMaxSize;
-}
+  //prepends game result to the list
+  this.prependGameResult = function(playerChoice, computerChoice){
+  var listAddition = new gameHistoryNode(playerChoice, computerChoice);
+  this.head.prev = listAddition;
+  listAddition.next = this.head;
+  this.head = listAddition;
+  if (this.overFull()){
+    var newTail = this.tail.prev;
+    newTail.next = null;
+    this.tail = newTail;
+  }
 
-function prependGameResult(playerChoice, computerChoice){
-  var historyListAddition = new createGameHistoryNode(playerChoice, computerChoice);
-  
-}
+  //This method returns, given playerChoice and computerChoice, a 3-array of
+  //the choices the player would make next.  The bot is "dumb", in that it only
+  //looks at the previous choices.  This is still just a basic bot but it makes an
+  //attempt to read what a child might do.
+  this.getChoiceHistory(playerChoice, computerChoice){
+    //there's no point at beginning at the head since it has no data for what's
+    //after it
+    var choiceHistoryResults = [0, 0, 0];
+    for (var i = this.head.next; i != null; i = i.next){
+      if (i.playerChoice = playerChoice && i.computerChoice = computerChoice){
+        choiceHistoryResults[i.prev.playerChoice]++;
+      }
+    }
+    return choiceHistoryResults;
+  }
+}*/
 
 var wins = 0;
 var lose = 0;
 
 var lastChoice = -1; //the last choice of the user for the dummy bot
-
-
 
 //svg wrapper that holds the squares
 var board = d3.select("body").append("svg")
