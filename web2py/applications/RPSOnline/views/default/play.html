@@ -45,6 +45,42 @@
     <!-- Your D3.js code for making a Bar Graph -->
 <script type="text/javascript">
 
+/*This is the node function in the historyList.  Just stores player and computer
+  choice.  Some ideas taken from http://blog.wolfram.com/2014/01/20/how-to-win-at-rock-paper-scissors/. */
+function createGameHistoryNode(dataPlayerChoice, dataComputerChoice){
+  this.dataPlayerChoice = dataPlayerChoice; this.dataComputerChoice = dataComputerChoice;
+  this.prev = null; this.next = null;
+}
+
+/*The actual linked list of game history.  This list is used for the computer
+  to predict human play.*/
+function createGameHistoryList(historyMaxSize){
+  this.historyMaxSize = historyMaxSize; this.historySize = 0; //current size
+  this.head = null; this.tail = null; //pointing the tail away from a node causes
+                                      //it to be cleaned by the garbage collector
+}
+
+//Some basic functions
+//max of 3-index array - useful for finding max wins when the data is reported
+//to the computer to make a choice
+function max3Array(choiceHistory){
+  if (choiceHistory[0] > choiceHistory[1]){
+    if (choiceHistory[0] > choiceHistory[2]) return choiceHistory[0];
+    else return choiceHistory[2];
+  } else if (choiceHistory[1] > choiceHistory[2]) return choiceHistory[1];
+  else return ChoiceHistory[2];
+}
+
+//Check if the historylist is at maximum size
+function gameHistoryListIsFull(gameHistoryList){
+  return gameHistoryList.historySize == gameHistoryList.historyMaxSize;
+}
+
+function prependGameResult(playerChoice, computerChoice){
+  var historyListAddition = new createGameHistoryNode(playerChoice, computerChoice);
+  
+}
+
 var wins = 0;
 var lose = 0;
 
@@ -304,7 +340,7 @@ function mouseOut(){
 
 
 //RNG function - default difficulty is 0.  Can use this to test for other types
-//1 = dummy.  Will just do whatever you did last.
+//2 = dummy.  Will just do whatever you did last.
 function computerChoice(difficulty = 1){
   console.log("difficulty = " + difficulty);
   if (difficulty = 1){
