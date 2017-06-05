@@ -14,15 +14,26 @@
             margin: 4px 2px;
             cursor: pointer;
         }
-        
+            .bottom-three {
+                margin-bottom: 3cm
+            }
+            .container > div {
+                display: inline-block;
+                display: -moz-inline-box;
+                *display: inline; /* For IE7 */
+                zoom: 1; /* Trigger hasLayout */
+                width: 33%;
+                text-align: center;
+            }
+
     </style>
 </head>
 
 <body style="background-color:#DCDCDC;">
-    
-<a href="{{=URL('default', 'index')}}" class="button">Home Page</a>
-    <a href="{{=URL('default', 'profile')}}" class="button">View your Profile</a>
-        <a href="{{=URL('default', 'stats')}}" class="button">View the Leaderboard</a>
+
+        <div class="container">
+            <div><a href="{{=URL('default', 'play')}}" class="button">Play the game!</a></div><div><a href="{{=URL('default', 'profile')}}" class="button">View Your Profile</a></div><div><a href="{{=URL('default', 'stats')}}" class="button">View the Leaderboard</a></div>
+        </div>
 
 {{=SCRIPT(_type="text/javascript", _src=URL(c="static", f="js/d3.v3.js"))}}
 
