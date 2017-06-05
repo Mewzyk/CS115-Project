@@ -1,25 +1,10 @@
 {{extend 'layout.html'}}
 
-<div class="container">
-    <div><a href="{{=URL('default', 'play')}}" class="button">Play the game!</a></div><div><a href="{{=URL('default', 'profile')}}" class="button">View Your Profile</a></div><div><a href="{{=URL('default', 'stats')}}" class="button">View the Leaderboard</a></div>
-</div>
 <style>
             .info {
                 background-color: #000000;
                 border: none;
                 color: gold;
-            }
-            .button {
-                background-color: #000000;
-                border: none;
-                color: white;
-                padding: 7px 16px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 12px;
-                margin: 4px 2px;
-                cursor: pointer;
             }
             .bottom-three {
                 margin-bottom: 3cm
@@ -32,13 +17,26 @@
                 width: 33%;
                 text-align: center;
             }
-       
+        .button {
+            background-color: #000000;
+            border: none;
+            color: white;
+            padding: 7px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
 </style>
 <br /><br />
 <body style="background-color:#DCDCDC;">
-    <div class="container">
-        <div><a href="{{=URL('default', 'play')}}" class="button">Play the game!</a></div><div><a href="{{=URL('default', 'profile')}}" class="button">View Your Profile</a></div><div><a href="{{=URL('default', 'stats')}}" class="button">View the Leaderboard</a></div>
-    </div>
+    
+        <div class="container">
+            <div><a href="{{=URL('default', 'index')}}" class="button">Return Home</a></div><div><a href="{{=URL('default', 'play')}}" class="button">Play the Game!</a></div><div><a href="{{=URL('default', 'stats')}}" class="button">View the Leaderboard</a></div>
+        </div>
+    
     {{if auth.user_id:}}
     <a class="info">{{=db.auth_user[auth.user_id].username}} </a>
     <br /><br />
