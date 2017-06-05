@@ -1,6 +1,22 @@
 {{extend 'layout.html'}}
 <body style="background-color:#DCDCDC;">
 <style>
+        .info {
+           background-color: #000000;
+           border: none;
+           color: gold;
+        }
+        .bottom-three {
+            margin-bottom: 3cm
+        }
+        .container > div {
+            display: inline-block;
+            display: -moz-inline-box;
+            *display: inline; /* For IE7 */
+            zoom: 1; /* Trigger hasLayout */
+            width: 33%;
+            text-align: center;
+        }
         .button {
             background-color: #000000;
             border: none;
@@ -15,6 +31,8 @@
         }
         
     </style>
-<a href="{{=URL('default', 'index')}}" class="button">Home Page</a>
-<a href="{{=URL('default', 'play')}}" class="button">Play the game!</a>
-<a href="{{=URL('default', 'profile')}}" class="button">View your Profile</a>
+    <body>
+        <div class="container">
+            <div><a href="{{=URL('default', 'index')}}" class="button">Return Home</a></div><div><a href="{{=URL('default', 'play')}}" class="button">Play the Game!</a></div><div><a href="{{=URL('default', 'stats')}}" class="button">View the Leaderboard</a></div>
+        </div>
+    </body>
