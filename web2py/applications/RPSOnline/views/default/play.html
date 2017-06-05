@@ -51,7 +51,7 @@ function gameHistoryNode(dataPlayerChoice, dataComputerChoice){
   this.playerChoice = dataPlayerChoice; this.computerChoice = dataComputerChoice;
   this.prev = null; this.next = null;
 }
-/*
+
 //The actual linked list of game history.  This list is used for the computer
 //to predict human play.
 function gameHistoryList(historyMaxSize){
@@ -65,15 +65,16 @@ function gameHistoryList(historyMaxSize){
   };
 
   //prepends game result to the list
-  this.prependGameResult = function(playerChoice, computerChoice){
+  this.prependGameResult = function (playerChoice, computerChoice){
   var listAddition = new gameHistoryNode(playerChoice, computerChoice);
   this.head.prev = listAddition;
   listAddition.next = this.head;
   this.head = listAddition;
-  if (this.overFull()){
-    var newTail = this.tail.prev;
-    newTail.next = null;
-    this.tail = newTail;
+    if (this.overFull()){
+      var newTail = this.tail.prev;
+      newTail.next = null;
+      this.tail = newTail;
+    }
   };
 
   //This method returns, given playerChoice and computerChoice, a 3-array of
@@ -85,15 +86,17 @@ function gameHistoryList(historyMaxSize){
     //after it
     var choiceHistoryResults = [0, 0, 0];
     for (var i = this.head.next; i != null; i = i.next){
-      if (i.playerChoice = playerChoice && i.computerChoice = computerChoice){
+      if (i.playerChoice == playerChoice && i.computerChoice == computerChoice){
         choiceHistoryResults[i.prev.playerChoice]++;
       }
     }
     return choiceHistoryResults;
   };
 
+  //Can add more in-depth methods later.  Once the framework is in adding more ways
+  //gets easier and easier.
 }
-*/
+
 var wins = 0;
 var lose = 0;
 
