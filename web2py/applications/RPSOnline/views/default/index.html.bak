@@ -1,6 +1,7 @@
 {{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
 {{extend 'layout.html'}}
 
+<!-- All CSS outlines from StackOverflow and w3schools tutorials, adapted as needed -->
 
 <html>
     <head>
@@ -17,14 +18,36 @@
                 margin: 4px 2px;
                 cursor: pointer;
             }
+            .center {
+                margin: auto;
+                width: 50%;
+                padding: 10px;
+            }
+            .bottom-three {
+                margin-bottom: 3cm
+            }
+            .container > div {
+                display: inline-block;
+                display: -moz-inline-box;
+                *display: inline; /* For IE7 */
+                zoom: 1; /* Trigger hasLayout */
+                width: 33%;
+                text-align: center;
+            }
         </style>
     </head>
+
+    <div class="center">
+        <h3>
+            <img src = 'http://rockpaperscissorshair.co.uk/img/logo-x2.png' style = "width:400px;height:200px;position:relative;left:110px; top:50px">
+        </h3>
+    </div>
+
+    <p class="bottom-three"></p>
+
     <body style="background-color:#DCDCDC;">
-        <a href="{{=URL('default', 'play')}}" class="button">Play the game!</a>
-        <a href="{{=URL('default', 'profile')}}" class="button">View your Profile</a>
-        <a href="{{=URL('default', 'stats')}}" class="button">View the Leaderboard</a>
+        <div class="container">
+            <div><a href="{{=URL('default', 'play')}}" class="button">Play the game!</a></div><div><a href="{{=URL('default', 'profile')}}" class="button">View Your Profile</a></div><div><a href="{{=URL('default', 'stats')}}" class="button">View the Leaderboard</a></div>
+        </div>
     </body>
-    <h3>
-        <img src = 'http://rockpaperscissorshair.co.uk/img/logo-x2.png' style = "width:400px;height:200px;position:relative;left:130px; top:50px">
-    </h3>
 </html>
