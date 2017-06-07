@@ -1,0 +1,1 @@
+I have included my unit tests in the master branch on git hub. The first module "UnitTests" was just to familiarize myself with some testing. The second module "UnitTests2" tests a direct input of 1,2,3 for rock,paper, or scissors and checks the output is correct.
