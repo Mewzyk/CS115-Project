@@ -1,0 +1,447 @@
+{{extend 'layout.html'}}
+
+<head>
+    <style>
+        .button {
+            background-color: #000000;
+            border: none;
+            color: white;
+            padding: 7px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .bottom-three {
+            margin-bottom: 3cm
+        }
+        .container > div {
+            display: inline-block;
+            display: -moz-inline-box;
+            *display: inline; /* For IE7 */
+            zoom: 1; /* Trigger hasLayout */
+            width: 50%;
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+<body style="background-color:#DCDCDC;">
+
+        <div class="container">
+            <div><a href="{{=URL('default', 'index')}}" class="button">Return Home</a></div><div><a href="{{=URL('default', 'profile')}}" class="button">View Your Profile</a></div>
+        </div>
+
+{{=SCRIPT(_type="text/javascript", _src=URL(c="static", f="js/d3.v3.js"))}}
+
+<!-- Change the title below: REQUIRED-->
+
+    <!--<h1 style = "color:#3030FF"><bold>Rock Paper Scissors</bold></h1>-->
+
+
+    <!-- Your D3.js code for making a Bar Graph -->
+<script type="text/javascript">
+
+//This is the node function in the historyList.  Just stores player and computer
+//choice.  Some ideas taken from http://blog.wolfram.com/2014/01/20/how-to-win-at-rock-paper-scissors/.
+function gameHistoryNode(dataPlayerChoice, dataComputerChoice){
+  this.playerChoice = dataPlayerChoice; this.computerChoice = dataComputerChoice;
+  this.prev = null; this.next = null;
+}
+
+//The actual linked list of game history.  This list is used for the computer
+//to predict human play.
+function gameHistoryList(historyMaxSize){
+  this.maxSize = historyMaxSize; this.size = 0; //current size
+  this.head = null; this.tail = null; //pointing the tail away from a node causes
+                                      //it to be cleaned by the garbage collector
+
+  //Check if the historylist is at maximum size
+  this.overFull = function (){
+    return this.size > this.maxSize;
+  };
+
+  //prepends game result to the list
+  this.prependGameResult = function (playerChoice, computerChoice){
+  var listAddition = new gameHistoryNode(playerChoice, computerChoice);
+  this.head.prev = listAddition;
+  listAddition.next = this.head;
+  this.head = listAddition;
+    if (this.overFull()){
+      var newTail = this.tail.prev;
+      newTail.next = null;
+      this.tail = newTail;
+    }
+  };
+
+  //This method returns, given playerChoice and computerChoice, a 3-array of
+  //the choices the player would make next.  The bot is "dumb", in that it only
+  //looks at the previous choices.  This is still just a basic bot but it makes an
+  //attempt to read what a child might do.
+  this.getChoiceHistory = function (playerChoice, computerChoice){
+    //there's no point at beginning at the head since it has no data for what's
+    //after it
+    var choiceHistoryResults = [0, 0, 0];
+    for (var i = this.head.next; i != null; i = i.next){
+      if (i.playerChoice == playerChoice && i.computerChoice == computerChoice){
+        choiceHistoryResults[i.prev.playerChoice]++;
+      }
+    }
+    return choiceHistoryResults;
+  };
+
+  //Can add more in-depth methods later.  Once the framework is in adding more ways
+  //gets easier and easier.
+}
+
+var wins = 0;
+var lose = 0;
+
+var lastChoice = -1; //the last choice of the user for the dummy bot
+
+//svg wrapper that holds the squares
+var board = d3.select("body").append("svg")
+    .attr("width", 1300)
+    .attr("height", 150)
+	.style("display", "block")
+    .append("g")
+	.attr("transform", "translate(25, 25)");
+
+/*
+//object that holds the values specific for each rectangle
+//Used to feed into the .selectAll in next line
+//replace colored rect options with rock, paper, scissor images
+// OLD CODE REPLACED BY CODE BELOW THAT USES RPS IMAGES INSTEAD OF RECTS
+var choices = [{color: "red", value: 0, transform: "translate(0,0)", stroke: 'none'},
+			   {color: "black", value: 1, transform: "translate(150,0)", stroke: 'none'},
+			   {color: "blue", value: 2, transform: "translate(300,0)", stroke: 'none'}];
+*/
+
+// object that holds the values/images for each RPS option
+// used to feed into teh .selectAll in the next line
+var images = [{value: 0, link: "https://img.clipartfest.com/201616f9cdd7deb314215b1be524d2a2_clipart-alpine-landscape-rock-rock-clipart_800-534.png", transform: "translate(150,0)" },
+              {value: 1, link: "https://www.rocknwater.com/wp-content/uploads/icon-paper-document-fold-redirect-pdf.png", transform: "translate(300,0)"},
+              {value: 2, link: "http://www.clipartbest.com/cliparts/KTn/Xj6/KTnXj6Mgc.png", transform: "translate(450,0)"}];
+
+board.selectAll(("image")).data(images).enter()
+    .append(("image"))
+    .attr("xlink:href", function(d){return d.link})
+    .attr("width", 100)
+    .attr("height", 100)
+    .attr('transform', function(d){return d.transform})
+	.on("mouseover", mouseHover)
+	.on("mouseout", mouseOut)
+	.on("click", click);
+
+
+board.append('rect')
+	.attr('width', '180')
+	.attr('height', '120')
+	.attr('fill', 'none')
+	.attr('stroke', 'green')
+	.attr('stroke-width', '2')
+	.attr("transform", "translate(950,0)");
+
+// place icon for user level
+board.append("svg:image")
+    .attr("xlink:href", "http://www.aapexshow.com/2017//custom/images/bronze.png")
+    .attr("width", 100)
+    .attr("height", 100)
+    .attr("x", 1020)
+    .attr("y",10);
+
+//Text that displays the user level
+board.append("text")
+    .text("Your level: ")
+	.attr("font-size", "10")
+	.attr("transform", "translate(960, 65)")
+	.classed("level", true);
+
+//Svg wrapper to hold the square box.
+var score = d3.select("body").append("svg")
+    .attr("width", 1300)
+    .attr("height", 100)
+	.attr("transform", "translate(25,25)")
+	.style("display", "block")
+    .append("g");
+
+//rectangle border around the svg
+score.append('rect')
+	.attr('width', '1005')
+	.attr('height', '80')
+	.attr('fill', 'none')
+	.attr('stroke', 'black')
+	.attr('stroke-width', '2')
+	.attr("transform", "translate(150,2)");
+
+//Text that holds wins
+score.append("text")
+	.text("Wins: ")
+	.attr("font-size", "20")
+    .attr("stroke", "red")
+    .attr("fill", "red")
+	.attr("transform", "translate(155,20)")
+	.classed("wins", true);
+
+//Text that holds losses
+score.append("text")
+	.text("Losses: ")
+	.attr("font-size", "20")
+    .attr("stroke", "blue")
+    .attr("fill", "blue")
+	.attr("transform", "translate(155,48)")
+	.classed("loss", true);
+
+//Text that holds the status text
+score.append("text")
+	.text("Status: ")
+	.attr("font-size", "20")
+    .attr("fill", "purple")
+    .attr("stroke", "purple")
+	.attr("transform", "translate(155,76)")
+	.classed("status", true);
+
+//Text that holds the user choice text
+score.append("text")
+	.text("You chose: ")
+	.attr("font-size", "10")
+	.attr("transform", "translate(670,17)")
+	.classed("you", true);
+
+//Text that holds the computer choice text
+score.append("text")
+	.text("Computer chose: ")
+	.attr("font-size", "10")
+	.attr("transform", "translate(820,17)")
+	.classed("computer", true);
+
+//Text that holds the outcome text
+score.append("text")
+    .text("")
+    .attr("font-size", "12")
+    .attr("stroke", "green")
+    .attr("fill", "green")
+    .attr("stroke-width", ".5")
+	.attr("transform", "translate(670,50)")
+    .classed("outcome", true);
+
+var levelInfo = ['bronze', 'silver', 'gold', 'platinum']; // types of levels
+var colorInfo = ['darksalmon', 'grey', '#F9F100', '#B2B1B1']; // colors used for each respective level
+var valueInfo = ['0','4','8','12']; // number of wins needed to reach each level
+var transformInfo = ["translate(1005,15)", "translate(1005,35)", "translate(1005,55)", "translate(1005,75)"]; // location of text
+
+for (i = 0; i < 4; i++) {
+    score.append("text")
+        .text(levelInfo[i] + ": " +valueInfo[i] + " or more wins")
+        .attr("font-size", "10")
+        .attr("transform", transformInfo[i])
+        .attr("stroke", colorInfo[i])
+        .attr("stroke-wdith", ".3")
+        .classed("level", true);
+}
+
+/**
+USE THE NEXT THREE LINES AS EXAMPLES FOR HOW TO DYNAMICALLY EDIT THE HTML
+*/
+//example code that sets the wins to 0 at init
+d3.selectAll('.wins')
+	.text("Wins: " + 0);
+
+//example code that sets loss to 0 at init.
+d3.selectAll('.loss')
+	.text("Losses: " + 0);
+
+d3.selectAll('.status')
+	.text("Status: Have fun!");
+
+d3.selectAll('.you')
+    .text("You chose:");
+
+d3.selectAll('.computer')
+    .text("Computer chose:");
+
+//Extra little sg that holds the rules
+d3.select("body").append("svg")
+    .attr("width", 400)
+    .attr("height", 50);
+
+console.log(d3.selectAll('.rect'));
+
+
+//on click function that is used for each square
+function click() {
+
+	userChoice = d3.select(this).datum().value; // user choice
+	compChoice = computerChoice(); // computer choice
+
+	// determine outcome and save result as a numeric value that can be further interpretted
+	chickenDinner = winner(userChoice, compChoice);
+
+	console.log(chickenDinner);
+    // Tie
+	if(chickenDinner < 0) {
+        d3.selectAll('.status').text("Status: Tie!");
+        d3.selectAll('.outcome').text("It's a tie!");
+    }
+
+    var losePhrases = ["Dangit, I lost!", "Wow, you beat me!", "I'll win next time!", "You're good at this game!", "Hmm, I should try something else!", "How do you keep winning?", "You got me again!", "Man, I'm losing!"];
+    var winPhrases = ["Yes, I won!", "Gotcha!", "Better luck next time!", "Ha, you're not that good'!", "Whoa, I'm pretty good!", "C'mon, choose something else!", "You should practice more!", "Whoo, I'm winning!"];
+
+    // User Loses
+	if(chickenDinner == 0){
+		console.log(lose);
+		lose = lose + 1;
+		d3.selectAll('.status').text("Status: You lose!");
+		d3.selectAll('.loss').text("Losses: " + lose);
+		console.log(lose);
+        d3.selectAll('.outcome').text("Computer Says: " + winPhrases[Math.floor(8 * Math.random())]);
+	}
+
+    // User Wins
+	if(chickenDinner == 1){
+		wins = wins + 1;
+		d3.selectAll('.status').text("Status: You win!");
+		d3.selectAll('.wins').text("Wins: " + wins);
+        d3.selectAll('.outcome').text("Computer Says: " + losePhrases[Math.floor(8 * Math.random())]);
+	}
+  lastChoice = userChoice; //for the dummy bot  - should be put in after winner is decided
+
+    // reset user choice
+    Image('blank', 650, -40);
+    Image('blank', 650, -70);
+    // reset comp choice
+    Image('blank', 800, -40);
+    Image('blank', 800, -70);
+
+    var RPS = ["rock", "paper", "scissor"]; // list of RPS options
+    for (i = 0; i < 3; i++) {
+        if (getChoice(userChoice) == RPS[i]) {
+            d3.selectAll('.you').text("You chose: " + Image(RPS[i], 650, 0));
+        }
+    }
+    for (i = 0; i < 3; i++) {
+        if (getChoice(compChoice) == RPS[i]) {
+            d3.selectAll('.computer').text("Computer chose: " + Image(RPS[i], 800, 0));
+        }
+    }
+
+    // Update level board as necessary
+    Medal(wins);
+}
+
+/**
+Following two functions are assigned to each square and basically just increase/decrease the size of the squares on hover.
+*/
+
+function mouseHover(){
+	d3.select(this)
+			.transition()
+			.attr('width', '110')
+			.attr('height', '110')
+			.attr('stroke', 'none');
+}
+
+function mouseOut(){
+	d3.select(this)
+			.transition()
+			.attr('width', '100')
+			.attr('height', '100')
+			.attr('stroke', 'none');
+}
+
+
+//RNG function - default difficulty is 0.  Can use this to test for other types
+//2 = dummy.  Will just do whatever you did last.
+function computerChoice(difficulty = 1){
+  console.log("difficulty = " + difficulty);
+  if (difficulty = 1){
+	  return Math.floor(3 * Math.random()); // randomly choose a number between 0 and 2 for the computer's choice
+  } else if (difficulty = 2){
+    if (lastChoice != -1) return lastChoice;
+    else return 0; //defaulting to rock is generally what humans do
+  }
+  else return Math.floor(3 * Math.random()); //for some reason difficulty is not set.
+}
+
+// displays the options as well as user/computer choices
+// parameters: choice = rock, paper, scissor; x = x data; y = y data
+function Image(choice, x, y) {
+
+    RPS = ['rock', 'paper', 'scissor'];
+    links = ["https://img.clipartfest.com/201616f9cdd7deb314215b1be524d2a2_clipart-alpine-landscape-rock-rock-clipart_800-534.png", "https://www.rocknwater.com/wp-content/uploads/icon-paper-document-fold-redirect-pdf.png", "http://www.clipartbest.com/cliparts/KTn/Xj6/KTnXj6Mgc.png"]; // links are in the order RPS
+
+    for (i = 0; i < 3; i++) {
+        if (choice == RPS[i]) {
+            var img = board.append("svg:image")
+            //var img = board.selectAll(("choice")).data("links").enter()
+             //   .add(("choice"))
+                .attr("xlink:href", links[i])
+                .attr("width", 100)
+                .attr("height", 100)
+                .attr("x", x)
+                .attr("y",y)
+                .on("mouseover", mouseHover)
+                .on("mouseout", mouseOut);
+        }
+    }
+
+    // blank reset
+    if (choice == 'blank') {
+        var img = board.append("svg:image")
+            .attr("xlink:href", "http://www.yarwoodleather.com/wp-content/uploads/2016/12/Aneurin-Grey.jpg")
+            .attr("width", 100)
+            .attr("height", 200)
+            .attr("x", x)
+            .attr("y",y);
+    }
+
+    return choice;
+}
+
+function Medal(wins) {
+    // displays the player's current level as text as well as a badge
+
+    numWins = [0, 4, 8, 12];
+    links = ["http://www.aapexshow.com/2017//custom/images/bronze.png", "https://static1.squarespace.com/static/56dc3f9cb654f9876576bab7/t/58af37a5d1758ef40fffbfc6/1487878063862/", "http://www.aapexshow.com/2017//custom/images/gold.png", "https://i2.wp.com/wordsowers.com/wp-content/uploads/2017/01/platinum-level.png?fit=562%2C563"]; // in the order BSGP
+
+    for (i = 0; i < 4; i++) {
+        if (wins >= numWins[i]) {
+            // blank reset
+            board.append("svg:image")
+                .attr("xlink:href", "http://www.yarwoodleather.com/wp-content/uploads/2016/12/Aneurin-Grey.jpg")
+                .attr("width", 100)
+                .attr("height", 100)
+                .attr("x", 1020)
+                .attr("y",10);
+            // new level icon
+            board.append("svg:image")
+                .attr("xlink:href", links[i])
+                .attr("width", 100)
+                .attr("height", 100)
+                .attr("x", 1020)
+                .attr("y",10);
+        }
+    }
+}
+
+function winner(userInput, compInput){
+	if(userInput == 0 && compInput == 2) return 1; // R > S
+    if(userInput == 1 && compInput == 0) return 1; // P > R
+    if(userInput == 2 && compInput == 1) return 1; // S > P
+    if(userInput == 0 && compInput == 1) return 0; // R < P
+    if(userInput == 1 && compInput == 2) return 0; // P < S
+    if(userInput == 2 && compInput == 0) return 0; // S < R
+	if(compInput == userInput) return -1;
+}
+
+function getChoice(value){
+	if(value == 0) return 'rock';
+	if(value == 1) return 'paper';
+	if(value == 2) return 'scissor';
+}
+            </script>
+{{=BEAUTIFY(response._vars)}}
+</body>

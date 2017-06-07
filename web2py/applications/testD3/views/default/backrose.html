@@ -1,0 +1,82 @@
+{{extend 'layout.html' }}
+<!DOCTYPE html>
+<html>
+<h4> Here is an example of inserting an svg image with svg path and tracing the path with a gif.
+<br> The path was drawn with svg-editor and definition saved to the svg file.</h4>
+<br>
+<h6> References<br> 
+<a href="https://code.google.com/p/svg-edit/">svg-editor from Google code</a>
+<a href="http://bl.ocks.org/duopixel/3824661">this uses random line path </a>
+</h6>
+
+
+<head>
+{{=SCRIPT(_type="text/javascript", _src=URL(c="static", f="dygraphjs/d3.v3.js"))}}
+</head>
+<body>
+<div id="svgpathSVGdata"></div>
+    <script type="text/javascript">
+        var divElem = d3.select("#svgpathSVGdata");
+ 
+        var svgcanvas = divElem.append("svg:svg")
+            .attr("width", 900)
+            .attr("height", 800);
+ 
+    //var path = svg.append("svg:path").attr("d", line(data));
+        // (1) Specifying path data the SVG way
+         var path = svgcanvas.append("svg:path")
+         //    .attr("d", "m313.79956,213.32504c45.74939,-131.25005 224.99908,0 0,168.74997c-224.99956,-168.74997 -45.74866,-300.00002 0,-168.74997z")
+ .attr("d", "m83,88, 161,-53,129,5,64,91,52,69,55,99,66,109,69,74,-14,23,-52,15,-95,10,-55,-17,-111,-52,-29,-183,-31,-36,-83,-47,-74,-121,-40,-77z")
+          
+//            .style("stroke-width", 1)  //any value  >1 is visible 
+            .style("stroke-width", 0)
+            .style("stroke", "red")
+            .style("fill", "none");
+
+    var pathEl = path.node();
+    var pathLength = pathEl.getTotalLength();
+    var BBox = pathEl.getBBox();
+    var scale = pathLength/BBox.width;
+    var offsetLeft = document.getElementById("svgpathSVGdata").offsetLeft;
+// draw pdf image
+            var pdfimg = svgcanvas.append("svg:image")
+            .attr({
+             "xlink:href": "{{=URL('static','austin.pdf')}}" ,
+              "x": "30",
+               "y": "30",
+               "width": "799",
+               "height": "899"
+              });
+
+
+// draw image on map
+
+            var img1 = svgcanvas.append("svg:image")
+            .attr({
+             "xlink:href": "{{=URL('static','images/butterfly.gif')}}" ,
+              "x": "30",
+               "y": "30",
+               "width": "30",
+               "height": "30",
+                transform: function () {
+            var p = pathEl.getPointAtLength(0)
+            return "translate(" + [p.x, p.y] + ")";
+        }
+    });
+
+    duration = 13500;
+    img1.transition()
+        .duration(duration)
+        .ease("linear")
+        .attrTween("transform", function (d, i) {
+        return function (t) {
+            var p = pathEl.getPointAtLength(pathLength*t);
+            return "translate(" + [p.x, p.y] + ")";
+        }
+    });
+
+    </script>
+</body>
+</html>
+
+

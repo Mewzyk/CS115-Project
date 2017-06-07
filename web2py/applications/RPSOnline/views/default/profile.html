@@ -1,7 +1,54 @@
 {{extend 'layout.html'}}
-{{if auth.user_id:}}
-<h2 class="welcome">{{=db.auth_user[auth.user_id].first_name}}  {{=db.auth_user[auth.user_id].last_name}}</h2>
 
+<style>
+        .info {
+            background-color: #000000;
+            border: none;
+            color: gold;
+        }   
+        .bottom-three {
+            margin-bottom: 3cm
+        }
+        .container > div {
+            display: inline-block;
+            display: -moz-inline-box;
+            *display: inline; /* For IE7 */
+            zoom: 1; /* Trigger hasLayout */
+            width: 50%;
+            text-align: center;
+        }
+        .button {
+            background-color: #000000;
+            border: none;
+            color: white;
+            padding: 7px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+</style>
+<br /><br />
+<body style="background-color:#DCDCDC;">
+    
+        <div class="container">
+            <div><a href="{{=URL('default', 'index')}}" class="button">Return Home</a></div><div><a href="{{=URL('default', 'play')}}" class="button">Play the Game!</a></div>
+        </div>
+    
+    {{if auth.user_id:}}
+    <a class="info">{{=db.auth_user[auth.user_id].username}} </a>
+    <br /><br />
+        {{if picture:}}
+        <img width="150px" src="{{=URL('download', args=picture)}}" />
+        {{else:}}
+        <img width="120px"
+             src="http://ctlatinonews.com/wp-content/uploads/missing-mcsanl.gov_.png" />
+        {{pass}}
+    <h3>Favorite Choice: {{=db.auth_user[auth.user_id].RPS}}<br /><br />
+    Biography: {{=db.auth_user[auth.user_id].body}}<br /><br /></h3>
+    <h7>Joined: {{=db.auth_user[auth.user_id].created_on}}</h7>
+    
 {{pass}}
-
-{{=BEAUTIFY(response._vars)}}
+</body>

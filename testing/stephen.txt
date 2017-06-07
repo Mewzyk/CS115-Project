@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 I did not write any unit or module tests.
+=======
+I did not write any module or unit tests
+>>>>>>> RPSdevelop

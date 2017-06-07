@@ -20,13 +20,21 @@ def index():
     response.flash = T("Welcome to RPSOnline!")
     return dict()
 
-
 @auth.requires_login()
 def createProfile():
-    form = SQLFORM(db.profile,
-    labels= {'RPS': "Favorite Choice", 'pic': "Profile Picture", 'body': "Bio"},
-                 submit_button = 'Complete profile')
-    return dict(form=form)
+
+    return dict()
+
+def stats():
+    return dict()
+
+@auth.requires_login()
+def play():
+    return dict()
+
+@auth.requires_login()
+def profile():
+    return dict()
 
 def user():
     """
@@ -44,7 +52,14 @@ def user():
     to decorate functions that need access control
     also notice there is http://..../[app]/appadmin/manage/auth to allow administrator to manage users
     """
+        
     return dict(form=auth())
+@auth.requires_login()
+def profile():
+    this_bio = auth.settings.body
+    this_picture = auth.user.pic
+    return dict(picture=this_picture,bio=this_bio)
+
 
 
 @cache.action()

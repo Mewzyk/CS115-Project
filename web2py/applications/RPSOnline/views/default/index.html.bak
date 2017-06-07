@@ -1,13 +1,53 @@
 {{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
 {{extend 'layout.html'}}
 
-{{block header}}
-    <header class="container-fluid background">R
-      <div class="jumbotron text-center">
-        <h1>RPSOnline
-          <small>{{=response.subtitle or ''}}</small></h1>
-        {{pass}}
-      </div>
-    </header>
-{{end}}
-<a href="{{=URL('default', 'profile')}}">Create a profile</a>
+<!-- All CSS outlines from StackOverflow and w3schools tutorials, adapted as needed -->
+
+<html>
+    <head>
+        <style>
+            .button {
+                background-color: #000000;
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+            }
+            .center {
+                margin: auto;
+                width: 50%;
+                padding: 10px;
+            }
+            .bottom-three {
+                margin-bottom: 3cm
+            }
+            .container > div {
+                display: inline-block;
+                display: -moz-inline-box;
+                *display: inline; /* For IE7 */
+                zoom: 1; /* Trigger hasLayout */
+                width: 50%;
+                text-align: center;
+            }
+        </style>
+    </head>
+
+    <div class="center">
+        <h3>
+            <img src = 'http://rockpaperscissorshair.co.uk/img/logo-x2.png' style = "width:400px;height:200px;position:relative;left:45px; top:50px">
+        </h3>
+    </div>
+
+    <p class="bottom-three"></p>
+
+    <body style="background-color:#DCDCDC;">
+        <div class="container">
+            <div><a href="{{=URL('default', 'play')}}" class="button">Play the game!</a></div><div><a href="{{=URL('default', 'profile')}}" class="button">View Your Profile</a></div>
+        </div>
+    </body>
+</html>

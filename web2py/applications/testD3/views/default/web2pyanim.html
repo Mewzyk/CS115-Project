@@ -1,0 +1,84 @@
+{{ extend 'layout.html' }}
+<!DOCTYPE html>
+<html>
+<h4> Here is an example of inserting an svg image with svg path and d3 transition along invisible path, and following the path with a gif.
+<br> The path was drawn with svg-editor and definition saved to the svg file.</h4>
+<br>
+<h6> References<br> 
+<a href="http://www.dashingd3js.com/svg-paths-and-d3js"> figuring out how to use svg path</a>
+<a href="https://code.google.com/p/svg-edit/">svg-editor from Google code</a>
+<a href="http://alignedleft.com/tutorials/d3/an-svg-primer/">z index information for svg in d3.js, use sort method</a>
+</h6>
+
+<head>
+{{=SCRIPT(_type="text/javascript", _src=URL(c="static", f="dygraphjs/d3.v3.js"))}}
+</head>
+<body>
+<div id="svgpathSVGdata"></div>
+    <script type="text/javascript">
+        var divElem = d3.select("#svgpathSVGdata");
+ 
+        var svgcanvas = divElem.append("svg:svg")
+            .attr("width", 900)
+            .attr("height", 600);
+ 
+    //var path = svg.append("svg:path").attr("d", line(data));
+        // (1) Specifying path data the SVG way
+         var path = svgcanvas.append("svg:path")
+             .attr("d", "m313.79956,213.32504c45.74939,-131.25005 224.99908,0 0,168.74997c-224.99956,-168.74997 -45.74866,-300.00002 0,-168.74997z")
+            .style("stroke-width", 0) // make invisible path no val width
+            .style("stroke", "red")
+            .style("fill", "none");
+
+    var pathEl = path.node();
+    var pathLength = pathEl.getTotalLength();
+    var BBox = pathEl.getBBox();
+    var scale = pathLength/BBox.width;
+    var offsetLeft = document.getElementById("svgpathSVGdata").offsetLeft;
+
+            var img2 = svgcanvas.append("svg:image")
+            .attr({
+             "xlink:href": "{{=URL('static','images/web2.svg')}}" ,
+              "x": "-350",
+               "y": "-270",
+               "width": "675",
+               "height": "675",
+                transform: function () {
+            var p = pathEl.getPointAtLength(0)
+            return "translate(" + [p.x, p.y] + ")";
+        }
+    });
+
+// draw image on map
+
+            var img1 = svgcanvas.append("svg:image")
+            .attr({
+             "xlink:href": "{{=URL('static','images/butterfly.gif')}}" ,
+
+              "x": "30",
+               "y": "30",
+               "width": "30",
+               "height": "30",
+                transform: function () {
+            var p = pathEl.getPointAtLength(0)
+            return "translate(" + [p.x, p.y] + ")";
+        }
+    });
+
+    duration = 13500;
+    img1.transition()
+        .duration(duration)
+        .ease("linear")
+        .attrTween("transform", function (d, i) {
+        return function (t) {
+            var p = pathEl.getPointAtLength(pathLength*t);
+            return "translate(" + [p.x, p.y] + ")";
+        }
+    });
+
+
+    </script>
+</body>
+</html>
+
+

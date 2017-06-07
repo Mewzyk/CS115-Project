@@ -1,0 +1,104 @@
+{{extend 'layout.html'}}
+<!DOCTYPE html>
+<html>
+<h4> Example of random line with non-svg img object tracing the line<h4><br>
+<h4> Line changes on each page reload.<h4><br>
+<h6> References<br>
+<a href="http://www.dashingd3js.com/svg-paths-and-d3js"> figuring out how to use svg path</a><br>
+<a href="http://bl.ocks.org/duopixel/3824661">this uses random line path </a>
+<a href="www.picgifs.com/graphics/butterflies">similar butterfly gif found here.</a>
+
+</h6>
+
+<head>
+<style type="text/css">
+  #line{
+    width: 100%;
+    margin: 20px 0;
+    height: 300px;
+    background: #eee;
+  }
+  path {
+    stroke: steelblue;
+   //stroke-width: 1;
+   stroke-width: 1;
+    fill: none;
+  }
+  button {
+    margin: 20px 0 0 20px;
+  }
+​</style>
+</head>
+<body>
+  <!-- <button id="randomize">Reload to create random line with img</button> -->
+  <div id="line"></div>​
+
+{{=SCRIPT(_type="text/javascript", _src=URL(c="static", f="dygraphjs/d3.v3.js"))}}
+  <script type="text/javascript">
+    var svg = d3.select("#line").append("svg:svg").attr("width", "100%").attr("height", "100%");
+    var data = d3.range(50).map(function(){return Math.random()*10})
+    var x = d3.scale.linear().domain([0, 10]).range([0, 700]);
+    var y = d3.scale.linear().domain([0, 10]).range([10, 290]);
+    var line = d3.svg.line()
+      .interpolate("cardinal")
+      .x(function(d,i) {return x(i);})
+      .y(function(d) {return y(d);})
+
+    var path = svg.append("svg:path").attr("d", line(data));
+            var img1 = svg.append("svg:image")
+                .attr("xlink:href", "{{=URL('static','images/butterfly.gif')}}" )
+                .attr("x", "100")
+                .attr("y", "350")
+                .attr("width", "20")
+                .attr("height", "20");
+
+    var pathEl = path.node();
+    var pathLength = pathEl.getTotalLength();
+    var BBox = pathEl.getBBox();
+    var scale = pathLength/BBox.width;
+    var offsetLeft = document.getElementById("line").offsetLeft;
+    var randomizeButton = d3.select("button");
+
+// draw image on map
+
+            var img1 = svg.append("svg:image")
+            .attr({
+              "xlink:href": "{{=URL('static','images/butterfly.gif')}}" ,
+              "x": "30",
+               "y": "30",
+               "width": "30",
+               "height": "30",
+                transform: function () {
+            //var p = pathNode.getPointAtLength(0)
+            var p = pathEl.getPointAtLength(0)
+            return "translate(" + [p.x, p.y] + ")";
+        }
+    });
+
+    duration = 13500;
+    img1.transition()
+        .duration(duration)
+        .ease("linear")
+        .attrTween("transform", function (d, i) {
+        return function (t) {
+            //var p = pathNode.getPointAtLength(pathLength*t);
+            var p = pathEl.getPointAtLength(pathLength*t);
+            return "translate(" + [p.x, p.y] + ")";
+        }
+    });
+//});
+
+    randomizeButton.on("click", function(){
+      data = d3.range(50).map(function(){return Math.random()*10});
+      img1.attr("opacity", 0)                                     
+      path
+        .transition()
+        .duration(300)
+        .attr("d", line(data));
+    });
+  </script>
+</body>
+</html>
+<script language="javascript"><!--//bmi_orig_img 0 //
+-->
+</script>
