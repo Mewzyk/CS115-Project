@@ -1,4 +1,10 @@
 # CS115-Project
-# Contributing Members:
-# Stephen Thomas
-# Justice Lammers
+#
+# RPSOnline
+
+Hi! Welcome to RPSOnline, the group project put together by:
+- Stephen Thomas (Product Owner)
+- Justice Lammers
+- Alex Hancock
+- Jimmy Chan
+- Andrew Pometta
